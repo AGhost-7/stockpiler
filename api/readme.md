@@ -52,7 +52,7 @@ POST /v1/locations
 Request body:
 ```
 {
-	"ownerId": "",
+	"owner_id": "",
 	"name": "My Store"
 }
 ```
@@ -142,9 +142,9 @@ POST /v1/locations/:locationId/devices
 Request body:
 ```
 {
-	"hardwareId": "e5bda6854daf8b61f8f181dbdec624f357b9efb8",
-	"macAddress": "01:23:45:67:89:ab",
-	"locationId": "example",
+	"hardware_id": "e5bda6854daf8b61f8f181dbdec624f357b9efb8",
+	"mac_address": "01:23:45:67:89:ab",
+	"location_id": "example",
 	"name": "My device name"
 }
 ```
@@ -160,7 +160,9 @@ DELETE /v1/locations/:locationId/devices/:deviceId
 ## Developing
 
 ```
-sudo pip install -r requirements.txt
+sudo pip install --editable .[dev]
 docker-compose up
+api
 ```
 
+TODO: use virtualenv...
