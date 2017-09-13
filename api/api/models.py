@@ -9,7 +9,7 @@ def Id():
 class User(db.Model):
     __tablename__ = 'user'
     id = Id()
-    email = Column(String(256), nullable=False)
+    email = Column(String(256), nullable=False, unique=True)
     password = Column(BLOB(60), nullable=False)
     active = Column(Boolean(), nullable=False, default=False)
 

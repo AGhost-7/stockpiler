@@ -1,6 +1,7 @@
+from http import HTTPStatus
 import requests
 from faker import Faker
-from api.models import User
+from api.models import User, EmailConfirmation
 
 
 fake = Faker()
@@ -10,21 +11,46 @@ base_url = 'http://localhost:5000'
 # This is actually the http api that mailhog exposes.
 mail_base_url = 'http://localhost:8025'
 
+state = {
+    'email': fake.email(),
+    'password': fake.password()
+}
+
+
+def test_clean_emails():
+    response = requests.delete(mail_base_url + '/api/v1/messages')
+    assert response.status_code == HTTPStatus.OK.value
+
 
 def test_user_registration():
-    requests.delete(mail_base_url + '/api/v1/messages')
-    data = {
-        'email': fake.email(),
-        'password': fake.password()
-    }
+    response = requests.post(base_url + '/v1/users/register', json=state)
+    assert response.json()['email'] == state['email']
+    assert response.status_code == 200
 
-    response = requests.post(base_url + '/v1/users/register', json=data)
-    assert response.json()['email'] == data['email']
-
-    response = requests.get(mail_base_url + '/api/v1/messages')
-    assert len(response.json()) == 1
-
-    user = User.query.filter(User.email == data['email']).first()
+    user = User.query.filter(User.email == state['email']).first()
     assert user is not None
     assert user.active is not True
-    assert user.password != data['password']
+    assert user.password != state['password']
+
+
+def test_user_registration_email():
+    response = requests.get(mail_base_url + '/api/v1/messages')
+    messages = response.json()
+    assert len(messages) == 1
+    email_body = messages[0]['MIME']['Parts'][0]['MIME']['Parts'][0]['Body']
+    id = email_body.split('\n')[1]
+
+    confirmation = EmailConfirmation.query.get(id)
+    assert confirmation is not None
+    state['confirmation_id'] = confirmation.id
+
+
+def test_user_confirmation():
+    def assert_response(id, status):
+        response = requests.get(
+            base_url + '/v1/users/confirm-email/' + id)
+
+        assert response.status_code == status.value
+
+    assert_response('booom', HTTPStatus.NOT_FOUND)
+    assert_response(state['confirmation_id'], HTTPStatus.OK)

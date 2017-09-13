@@ -160,9 +160,8 @@ DELETE /v1/locations/:locationId/devices/:deviceId
 ## Developing
 
 ```
-sudo pip install --editable .[dev]
+virtualenv env
+pip install --editable .[dev]
 docker-compose up
 api
 ```
-
-TODO: use virtualenv...

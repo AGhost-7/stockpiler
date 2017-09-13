@@ -1,3 +1,4 @@
+from flask_babel import Babel
 from flask import Flask
 
 
@@ -9,3 +10,5 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
         'mysql+pymysql://root:root@localhost:3306/test'
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+babel = Babel(app)

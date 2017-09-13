@@ -11,11 +11,12 @@ setup(
         'Flask-Mail==0.9.1',
         'flask-sqlalchemy==2.2',
         'pymysql==0.7.11',
-        'Faker==0.8.3'
+        'Flask-Babel==0.11.2'
     ],
     extras_require={
         'dev': [
             'pytest==3.2.2',
+            'Faker==0.8.3',
             'requests==2.18.4'
         ]
     },
