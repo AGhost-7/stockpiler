@@ -11,7 +11,8 @@ setup(
         'Flask-Mail==0.9.1',
         'flask-sqlalchemy==2.2',
         'pymysql==0.7.11',
-        'Flask-Babel==0.11.2'
+        'Flask-Babel==0.11.2',
+        'pyjwt==1.5.3'
     ],
     extras_require={
         'dev': [

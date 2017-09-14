@@ -24,12 +24,12 @@ def test_clean_emails():
 
 def test_user_registration():
     response = requests.post(base_url + '/v1/users/register', json=state)
-    assert response.json()['email'] == state['email']
     assert response.status_code == 200
+    assert response.json()['email'] == state['email']
 
     user = User.query.filter(User.email == state['email']).first()
     assert user is not None
-    assert user.active is not True
+    assert user.email_confirmed is not True
     assert user.password != state['password']
 
 
@@ -54,3 +54,10 @@ def test_user_confirmation():
 
     assert_response('booom', HTTPStatus.NOT_FOUND)
     assert_response(state['confirmation_id'], HTTPStatus.OK)
+
+
+def test_user_login():
+    response = requests.post(base_url + '/v1/users/login', json=state)
+    assert response.status_code == 200
+    body = response.json()
+    assert 'token' in body

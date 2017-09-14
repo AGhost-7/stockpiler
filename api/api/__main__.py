@@ -7,6 +7,7 @@ from .models import User, EmailConfirmation
 from flask import request, jsonify
 from .mail import send_mail
 from http import HTTPStatus
+from .auth import create_token
 
 
 @app.route('/v1/users/register', methods=['POST'])
@@ -17,6 +18,7 @@ def register():
     hashed = bcrypt.hashpw(bytes(body['password'], 'utf8'), bcrypt.gensalt())
     user = User(id=str(uuid4()), email=email, password=hashed)
     db.session.add(user)
+    db.session.flush()
 
     confirmation = EmailConfirmation(id=str(uuid4()), user_id=user.id)
     db.session.add(confirmation)
@@ -24,7 +26,7 @@ def register():
     send_mail('confirm-email', [email], id=confirmation.id)
     db.session.commit()
 
-    return jsonify({'email': body['email'], 'active': False})
+    return jsonify(user.to_dict())
 
 
 @app.route('/v1/users/confirm-email/<id>')
@@ -36,10 +38,35 @@ def confirm_email(id):
         return response
     else:
         user = User.query.get(confirmation.user_id)
-        user.active = True
+        user.email_confirmed = True
         db.session.delete(confirmation)
         db.session.commit()
-        return jsonify({'email': user.email, 'active': True})
+        return jsonify(user.to_dict())
+
+
+@app.route('/v1/users/login', methods=['POST'])
+def login():
+    body = request.get_json()
+    email = body['email']
+    password = body['password']
+
+    user = User \
+        .query \
+        .filter(User.email == email) \
+        .first()
+
+    if user is None:
+        return jsonify({'message': 'email_invalid'}), HTTPStatus.NOT_FOUND
+
+    if not user.email_confirmed:
+        body = {'message': 'email_not_confirmed'}
+        return jsonify(body), HTTPStatus.BAD_REQUEST
+
+    if not bcrypt.checkpw(bytes(password, 'utf8'), user.password):
+        body = {'message': 'incorrect_password'}
+        return jsonify(body), HTTPStatus.BAD_REQUEST
+
+    return jsonify({'token': create_token(user)})
 
 
 app.run(debug=True)
