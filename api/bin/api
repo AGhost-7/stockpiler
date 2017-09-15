@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
 
-import api.__main__
+from api import app
 
+
+app.run(debug=True)

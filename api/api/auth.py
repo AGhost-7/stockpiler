@@ -5,9 +5,9 @@ from datetime import datetime
 from .app import app
 from functools import wraps
 import jwt
-from flask import request, jsonify, g
-from http import HTTPStatus
+from flask import request, g
 from .models import User
+from .error import error
 
 
 secret = app.config['JWT_SECRET']
@@ -28,23 +28,21 @@ def authenticated(function):
         header = request.headers['Authorization']
 
         if header is None:
-            body = {'message': 'header_not_found'}
-            return jsonify(body), HTTPStatus.UNAUTHORIZED
+            return error.unautorized('Authorization header was not found')
 
         parts = header.split(' ')
         if len(parts) != 2 or parts[0] != 'Bearer':
-            body = {'message': 'invalid_auth_header'}
-            return jsonify(body), HTTPStatus.UNAUTHORIZED
+            return error.unauthorized('Invalid authorization header format')
 
         try:
             token = jwt.decode(parts[1], secret)
+            g.jwt = token
             g.current_user = User \
                 .query \
                 .filter(User.email == token.email) \
                 .first()
         except (jwt.exceptions.InvalidTokenError, jwt.exceptions.DecodeError):
-            body = {'message': 'invalid_token'}
-            return jsonify(body), HTTPStatus.UNAUTHORIZED
+            return error.unauthorized('Please login')
 
     return wrap
 

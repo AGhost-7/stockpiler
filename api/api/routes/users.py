@@ -1,16 +1,17 @@
-
 import bcrypt
-from .db import db
-from .app import app
+from api.error import error
+from api.db import db
 from uuid import uuid4
-from .models import User, EmailConfirmation
-from flask import request, jsonify
-from .mail import send_mail
-from http import HTTPStatus
-from .auth import create_token
+from api.models import User, EmailConfirmation
+from flask import request, jsonify, Blueprint
+from api.mail import send_mail
+from api.auth import create_token
 
 
-@app.route('/v1/users/register', methods=['POST'])
+users = Blueprint('users', __name__, url_prefix='/v1/users')
+
+
+@users.route('/register', methods=['POST'])
 def register():
     body = request.get_json()
     email = body['email']
@@ -29,13 +30,11 @@ def register():
     return jsonify(user.to_dict())
 
 
-@app.route('/v1/users/confirm-email/<id>')
+@users.route('/confirm-email/<id>')
 def confirm_email(id):
     confirmation = EmailConfirmation.query.get(id)
     if confirmation is None:
-        response = jsonify({'error': 'link-invalid'})
-        response.status_code = HTTPStatus.NOT_FOUND.value
-        return response
+        return error.not_found('Link is invalid')
     else:
         user = User.query.get(confirmation.user_id)
         user.email_confirmed = True
@@ -44,7 +43,7 @@ def confirm_email(id):
         return jsonify(user.to_dict())
 
 
-@app.route('/v1/users/login', methods=['POST'])
+@users.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
     email = body['email']
@@ -56,17 +55,12 @@ def login():
         .first()
 
     if user is None:
-        return jsonify({'message': 'email_invalid'}), HTTPStatus.NOT_FOUND
+        return error.not_found('Could not find a user tied to the given email')
 
     if not user.email_confirmed:
-        body = {'message': 'email_not_confirmed'}
-        return jsonify(body), HTTPStatus.BAD_REQUEST
+        return error.bad_request('Email confirmation is still pending')
 
     if not bcrypt.checkpw(bytes(password, 'utf8'), user.password):
-        body = {'message': 'incorrect_password'}
-        return jsonify(body), HTTPStatus.BAD_REQUEST
+        return error.bad_request('Incorrect password')
 
     return jsonify({'token': create_token(user)})
-
-
-app.run(debug=True)

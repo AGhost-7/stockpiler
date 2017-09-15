@@ -1,4 +1,3 @@
-from http import HTTPStatus
 import requests
 from faker import Faker
 from api.models import User, EmailConfirmation
@@ -19,7 +18,7 @@ state = {
 
 def test_clean_emails():
     response = requests.delete(mail_base_url + '/api/v1/messages')
-    assert response.status_code == HTTPStatus.OK.value
+    assert response.status_code == 200
 
 
 def test_user_registration():
@@ -50,10 +49,10 @@ def test_user_confirmation():
         response = requests.get(
             base_url + '/v1/users/confirm-email/' + id)
 
-        assert response.status_code == status.value
+        assert response.status_code == status
 
-    assert_response('booom', HTTPStatus.NOT_FOUND)
-    assert_response(state['confirmation_id'], HTTPStatus.OK)
+    assert_response('booom', 404)
+    assert_response(state['confirmation_id'], 200)
 
 
 def test_user_login():

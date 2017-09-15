@@ -1,6 +1,5 @@
-api/__pycache__/*
 api.egg-info/*
 report.xml
-test/__pycache__/
+__pycache__/
 .cache/
 env/
