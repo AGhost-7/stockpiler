@@ -24,14 +24,14 @@ def create_token(user):
 def authenticated(function):
 
     @wraps(function)
-    def wrap():
-        header = request.headers['Authorization']
+    def wrap(*args, **kwargs):
+        header = request.headers.get('Authorization')
 
         if header is None:
-            return error.unautorized('Authorization header was not found')
+            return error.unauthorized('Authorization header was not found')
 
         parts = header.split(' ')
-        if len(parts) != 2 or parts[0] != 'Bearer':
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
             return error.unauthorized('Invalid authorization header format')
 
         try:
@@ -39,8 +39,9 @@ def authenticated(function):
             g.jwt = token
             g.current_user = User \
                 .query \
-                .filter(User.email == token.email) \
+                .filter(User.email == token['email']) \
                 .first()
+            return function(*args, **kwargs)
         except (jwt.exceptions.InvalidTokenError, jwt.exceptions.DecodeError):
             return error.unauthorized('Please login')
 

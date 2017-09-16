@@ -13,15 +13,16 @@ locations = Blueprint('locations', __name__, url_prefix='/v1/locations')
 @authenticated
 def create_location():
     body = request.get_json()
-    user_id = body['user_id']
+    owner_id = body['owner_id']
 
-    user = User.get(user_id)
+    user = User.query.get(owner_id)
 
     if user is None:
         return error.not_found('User not found')
 
     location = Location(id=str(uuid4()), owner_id=user.id, name=body['name'])
 
+    db.session.add(location)
     db.session.commit()
 
-    return jsonify(location)
+    return jsonify(location.to_dict())

@@ -43,3 +43,10 @@ class Location(db.Model, ChangeTracked):
     id = Id()
     owner_id = Column(ForeignKey('user.id'), nullable=False)
     name = Column(String(256), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'owner_id': self.owner_id,
+            'name': self.name
+        }

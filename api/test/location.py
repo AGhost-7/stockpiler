@@ -1,5 +1,5 @@
-import requests
-from api.models import Location
+from sqlalchemy import text
+from api.db import db
 from .fixtures import user
 from faker import Faker
 
@@ -14,14 +14,10 @@ def test_create_location():
         'name': fake.company()
     }
 
-    response = requests.post(base_url + '/v1/locations', json=body)
+    response = user.post(base_url + '/v1/locations', json=body)
 
-    print('location response:', response.text)
     assert response.status_code == 200
 
-    location = Location \
-        .query \
-        .filter(Location.name == body['name']) \
-        .first()
-
-    assert location is not None
+    query = text(
+        'select * from location where name = \'' + body['name'] + '\'')
+    assert db.engine.execute(query).rowcount == 1
