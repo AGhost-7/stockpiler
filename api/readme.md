@@ -57,6 +57,12 @@ Request body:
 }
 ```
 
+#### Listing all Locations
+
+```
+GET /v1/locations
+```
+
 ### Location Members
 
 #### Grant Access to a Location
