@@ -43,7 +43,7 @@ def list_locations():
     return jsonify([location.to_dict() for location in locations])
 
 
-@locations.route('<location_id>/members/<member_id>', methods=['POST'])
+@locations.route('/<location_id>/members/<member_id>', methods=['POST'])
 @authenticated(['user'])
 def add_location_member(location_id, member_id):
     location = Location.query.get(location_id)
@@ -57,3 +57,31 @@ def add_location_member(location_id, member_id):
         db.session.add(member)
         db.session.commit()
         return jsonify(member.to_dict())
+
+
+@locations.route('/<location_id>/members')
+@authenticated(['user'])
+def list_location_members(location_id):
+    members = User \
+        .query \
+        .join(LocationMember, LocationMember.user_id == User.id) \
+        .filter(LocationMember.location_id == location_id) \
+        .all()
+
+    return jsonify([member.to_dict() for member in members])
+
+
+@locations.route('/<location_id>/members/<member_id>', methods=['DELETE'])
+@authenticated(['user'])
+def delete_location_member(location_id, member_id):
+    affected_records = LocationMember \
+        .query \
+        .filter(
+            LocationMember.location_id == location_id
+            and LocationMember.user_id == member_id) \
+        .delete()
+
+    if affected_records < 1:
+        return error.not_found(
+            'Cannot delete user as he is not a member of the location')
+    return ('', 200)

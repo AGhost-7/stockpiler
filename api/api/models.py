@@ -66,7 +66,7 @@ class LocationMember(db.Model, TrackCreator):
     def to_dict(self):
         return {
             'location_id': self.location_id,
-            'user_id': self.user.id
+            'user_id': self.user_id
         }
 
 
