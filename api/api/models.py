@@ -1,21 +1,26 @@
 from .db import db
 from datetime import datetime
 from sqlalchemy import Column, String, Boolean, BLOB, ForeignKey, DateTime, \
-    PrimaryKeyConstraint
+    PrimaryKeyConstraint, Integer, Numeric
 from sqlalchemy.sql import func as sqlfunc
+from uuid import uuid4
+
+
+def create_id():
+    return str(uuid4())
 
 
 def Id():
-    return Column(String(36), primary_key=True)
+    return Column(String(36), primary_key=True, default=create_id)
 
 
-class TrackUpdator:
+class TrackUpdates:
     updated_at = Column(
         DateTime, nullable=False, server_default=sqlfunc.now(),
         onupdate=datetime.utcnow)
 
 
-class TrackCreator:
+class TrackCreations:
     created_at = Column(
         DateTime, nullable=False, server_default=sqlfunc.now())
 
@@ -41,7 +46,7 @@ class EmailConfirmation(db.Model):
     user_id = Column(ForeignKey('user.id'), nullable=False)
 
 
-class Location(db.Model, TrackCreator, TrackUpdator):
+class Location(db.Model, TrackCreations, TrackUpdates):
     __tablename__ = 'location'
 
     id = Id()
@@ -56,7 +61,7 @@ class Location(db.Model, TrackCreator, TrackUpdator):
         }
 
 
-class LocationMember(db.Model, TrackCreator):
+class LocationMember(db.Model, TrackCreations):
     __tablename__ = 'location_access'
 
     location_id = Column(ForeignKey('location.id'), nullable=False)
@@ -68,6 +73,26 @@ class LocationMember(db.Model, TrackCreator):
             'location_id': self.location_id,
             'user_id': self.user_id
         }
+
+
+class Item(db.Model, TrackCreations, TrackUpdates):
+    __tablename__ = 'item'
+    id = Id()
+    name = Column(String(256), nullable=False)
+    price = Column(Numeric(15, 2))
+
+
+# Split into two tables to avoid having migration pains when I add orgs.
+class ItemStock(db.Model, TrackCreations, TrackUpdates):
+    __tablename__ = 'item_stock'
+
+    item_id = Column(ForeignKey('item.id'), nullable=False)
+    location_id = Column(ForeignKey('location.id'), nullable=False)
+    __tableargs__ = (PrimaryKeyConstraint(item_id, location_id),)
+    # Quantity for now is in milligrams. Will add enum later...
+    quantity = Column(Integer, nullable=False)
+    # Price of an item stock will be coalesced from the item.
+    price = Column(Numeric(15, 2))
 
 
 def drop_all():

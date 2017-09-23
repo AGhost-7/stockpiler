@@ -63,3 +63,14 @@ def test_remove_location_members():
         '/v1/locations/' + location_id + '/members')
 
     assert len(response.json()) == 1
+
+
+def test_create_location_item():
+    body = {
+        'name': fake.text(),
+        'quantity': fake.random_int(10 * 1000, 500 * 1000),
+        'price': fake.random_number(6.00, 15.00)
+    }
+    response = owner.requests.post(
+        '/v1/locations/' + location_id + '/items', json=body)
+    assert response.status_code == 200

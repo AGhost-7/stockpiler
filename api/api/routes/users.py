@@ -1,7 +1,6 @@
 import bcrypt
 from api.error import error
 from api.db import db
-from uuid import uuid4
 from api.models import User, EmailConfirmation
 from flask import request, jsonify, Blueprint
 from api.mail import send_mail
@@ -17,11 +16,11 @@ def register():
     email = body['email']
 
     hashed = bcrypt.hashpw(bytes(body['password'], 'utf8'), bcrypt.gensalt())
-    user = User(id=str(uuid4()), email=email, password=hashed)
+    user = User(email=email, password=hashed)
     db.session.add(user)
     db.session.flush()
 
-    confirmation = EmailConfirmation(id=str(uuid4()), user_id=user.id)
+    confirmation = EmailConfirmation(user_id=user.id)
     db.session.add(confirmation)
 
     send_mail('confirm-email', [email], id=confirmation.id)
