@@ -21,4 +21,8 @@ FROM python:3.5.2
 
 COPY --from=0 /env /env
 
+COPY ./entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["api"]
