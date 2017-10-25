@@ -1,0 +1,9 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This is used to reproduce a production environment. May not be necessary
+# for local development.
+
+Vagrant.configure("2") do |config|
+  config.vm.box = 'stockpiler-ubuntu-16.04-amd64'
+end
