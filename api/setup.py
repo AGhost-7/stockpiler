@@ -13,7 +13,8 @@ setup(
         'pymysql==0.7.11',
         'Flask-Babel==0.11.2',
         'pyjwt==1.5.3',
-        'flask-restful==0.3.6'
+        'flask-restful==0.3.6',
+        'simplejson==3.11.1'
     ],
     extras_require={
         'dev': [

@@ -81,6 +81,19 @@ class Item(db.Model, TrackCreations, TrackUpdates):
     name = Column(String(256), nullable=False)
     price = Column(Numeric(15, 2))
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price
+        }
+
+    def with_stock(self, stock):
+        item = self.to_dict()
+        item['location_id'] = stock.location_id
+        item['quantity'] = stock.quantity
+        return item
+
 
 # Split into two tables to avoid having migration pains when I add orgs.
 class ItemStock(db.Model, TrackCreations, TrackUpdates):

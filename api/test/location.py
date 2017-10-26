@@ -2,6 +2,7 @@ from api.models import Location
 from .fixtures.user import owner, employee
 from faker import Faker
 from .util.session import create_session
+from .util.func import call_once
 
 
 fake = Faker()
@@ -65,12 +66,31 @@ def test_remove_location_members():
     assert len(response.json()) == 1
 
 
-def test_create_location_item():
+@call_once
+def create_location_item():
     body = {
         'name': fake.text(),
         'quantity': fake.random_int(10 * 1000, 500 * 1000),
-        'price': fake.random_number(6.00, 15.00)
+        'price': fake.random_number(6, 15) + fake.random_int(0, 100) / 100
     }
     response = owner.requests.post(
         '/v1/locations/' + location_id + '/items', json=body)
     assert response.status_code == 200
+    return response.json()
+
+
+def test_create_location_item():
+    create_location_item()
+
+
+def test_update_location_item():
+    item = create_location_item()
+    body = {
+        'name': fake.text(),
+        'quantity': fake.random_int(5, 10),
+        'price': fake.random_int(20, 30) + fake.random_int(0, 100) / 100
+    }
+    response = owner.requests.put(
+        '/v1/locations/' + location_id + '/items/' + item['id'], json=body)
+    assert response.status_code == 200
+    assert response.json()['quantity'] == body['quantity']

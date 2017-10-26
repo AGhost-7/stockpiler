@@ -100,10 +100,26 @@ def add_location_item(location_id):
     db.session.add(item_stock)
     db.session.commit()
 
-    return jsonify({
-        'id': item.id,
-        'location_id': location_id,
-        'name': body['name'],
-        'quantity': body['quantity'],
-        'price': body['price']
-    })
+    return jsonify(item.with_stock(item_stock))
+
+
+@locations.route('/<location_id>/items/<item_id>', methods=['PUT'])
+@authenticated(['user'])
+def update_location_item(location_id, item_id):
+    body = request.get_json()
+
+    item = Item.query.get(item_id)
+    item.name = body['name']
+    item.price = body['price']
+    db.session.add(item)
+
+    item_stock = ItemStock \
+        .query \
+        .filter(ItemStock.item_id == item_id) \
+        .first()
+    item_stock.quantity = body['quantity']
+    db.session.add(item)
+
+    db.session.commit()
+
+    return jsonify(item.with_stock(item_stock))
