@@ -11,3 +11,8 @@ packer build -var 'api_token=YOUR API TOKEN' template.json
 ```
 
 After building the image you will see it pop up in the snapshots tab when creating a droplet.
+
+### Building only for vagrant
+```
+packer build -var 'api_token=YOUR API TOKEN' -only vagrant template.json
+```

@@ -2,9 +2,24 @@
 Stuff for the code to run in prod, etc. WIP
 
 ## Developing
-- Build the packer image (see instructions in `packer` directory).
-- Add the generated image: `vagrant box add stockpiler-ubuntu-16.04-amd64 packer/stockpiler-ubuntu-16.04-amd64.box`
-- run `vagrant up`.
+
+### Install vagrant
+```
+sudo apt-get install vagrant -y
+```
+
+### Get the base image
+Build the packer image (see instructions in `packer` directory), then add the
+generated image:
+```
+vagrant box add stockpiler-ubuntu-16.04-amd64 packer/stockpiler-ubuntu-16.04-amd64.box
+```
+
+### Boot up
+Just...
+```
+vagrant up
+```
 
 ## Ramblings...
 - avoid unreproducible machine state:

@@ -11,6 +11,7 @@
 		},
 		{
 			"type": "virtualbox-iso",
+			"name": "vagrant",
 			"guest_os_type": "Ubuntu_64",
 			"iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
 			"iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
@@ -47,14 +48,19 @@
 		{
 			"type": "shell",
 			"script": "provision.sh"
+		},
+		{
+			"only": ["vagrant"],
+			"type": "shell",
+			"script": "vagrant-provision.sh"
 		}
 	],
 	"post-processors": [
 		[
 			{
+				"only": ["vagrant"],
 				"type": "vagrant",
-				"output": "stockpiler-ubuntu-16.04-amd64.box",
-				"only": ["virtualbox-iso"]
+				"output": "stockpiler-ubuntu-16.04-amd64.box"
 			}
 		]
 	]
