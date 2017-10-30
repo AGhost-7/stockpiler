@@ -21,6 +21,7 @@ sudo ufw default allow outgoing
 sudo ufw default deny incoming
 sudo ufw allow ssh
 sudo ufw enable
+sudo update-rc.d ufw defaults
 
 # }}}
 
@@ -41,6 +42,8 @@ sudo apt-get install -y --no-install-recommends strace
 # a better top
 sudo apt-get install -y --no-install-recommends htop
 
+# editing tool
+sudo apt-get install -y --no-install-recommends vim
 # }}}
 
 # {{{ install docker

@@ -5,6 +5,32 @@
 # for local development.
 
 Vagrant.configure("2") do |config|
-  config.vm.box = 'stockpiler-ubuntu-16.04-amd64'
-	config.vm.network "private_network", ip: "192.168.50.2"
+	config.vm.box = 'stockpiler-ubuntu-16.04-amd64'
+
+	config.vm.define 'orchestration', primary: true do |machine|
+		machine.vm.network "private_network", ip: '192.168.50.2'
+		machine.vm.provision 'shell', privileged: false, inline: <<-SCRIPT
+		sudo pip install ansible
+		cat /vagrant/ansible/test/vagrant_key > ~/.ssh/id_rsa
+		SCRIPT
+		machine.vm.synced_folder "~/.ssh", "/home/vagrant/.ssh-host"
+	end
+
+	machines = [
+		['buildbot_master', '192.168.50.3'],
+		['buildbot_worker1', '192.168.50.4'],
+		['buildbot_worker2', '192.168.50.5'],
+	]
+
+	machines.each do |item|
+		name = item[0]
+		ip = item[1]
+		config.vm.define name do |machine|
+			machine.vm.network "private_network", ip: ip
+			machine.vm.provision "shell", privileged: false, inline: <<-SCRIPT
+			cat /vagrant/ansible/test/vagrant_key.pub >> ~/.ssh/authorized_keys
+			SCRIPT
+		end
+	end
+
 end

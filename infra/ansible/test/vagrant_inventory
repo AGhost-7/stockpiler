@@ -1,0 +1,11 @@
+[registry]
+192.168.50.3
+[buildbot_master]
+192.168.50.3
+[buildbot_worker]
+192.168.50.3
+192.168.50.4
+192.168.50.5
+[buildbot:children]
+buildbot_master
+buildbot_worker

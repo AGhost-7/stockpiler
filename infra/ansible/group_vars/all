@@ -1,0 +1,19 @@
+# vim: set ft=yaml:
+
+buildbot_web_port: 8010
+buildbot_worker_pass: changemeh
+buildbot_postgres_user: buildbot
+buildbot_postgres_password: buildbot
+buildbot_postgres_db: buildbot
+buildbot_git_repository: git@github.com:AGhost-7/stockpiler
+buildbot_git_private_key: ~/.ssh-host/stockpiler-buildbot
+buildbot_config_dir: /etc/buildbot
+
+docker_log_driver: journald
+docker_default_restart_policy: always
+
+docker_registry_port: 7000
+docker_registry_name: "{{groups['registry'][0]}}:{{docker_registry_port}}"
+docker_registry_key_file: test/registry.key
+docker_registry_cert_file: test/registry.crt
+
