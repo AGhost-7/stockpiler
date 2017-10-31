@@ -8,7 +8,7 @@ fake = Faker()
 
 base_url = 'http://localhost:5000'
 # This is actually the http api that mailhog exposes.
-mail_base_url = 'http://' + environ.get('MAIL_SERVER') + ':8025'
+mail_base_url = 'http://' + environ.get('MAIL_SERVER', 'localhost') + ':8025'
 
 state = {
     'email': fake.email(),

@@ -15,7 +15,7 @@ COPY ./test /test/test
 
 COPY ./test.sh /test/test.sh
 
-RUN pip install .
+RUN pip install --editable .
 
 ENV SQLALCHEMY_DATABASE_URI mysql+pymysql://root:root@db:3306/test
 
