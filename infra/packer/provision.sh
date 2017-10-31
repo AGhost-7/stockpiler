@@ -44,6 +44,10 @@ sudo apt-get install -y --no-install-recommends htop
 
 # editing tool
 sudo apt-get install -y --no-install-recommends vim
+
+# terminal multiplexing
+sudo apt-get install -y --no-install-recommends tmux
+
 # }}}
 
 # {{{ install docker
@@ -58,7 +62,7 @@ sudo apt-get -y install \
 curl https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add --
 echo 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable' | sudo tee /etc/apt/sources.list.d/docker.list
 sudo apt-get update
-sudo apt-get install docker-ce -y
+sudo apt-get install docker-ce=17.09.0~ce-0~ubuntu -y
 sudo systemctl enable docker
 
 # }}

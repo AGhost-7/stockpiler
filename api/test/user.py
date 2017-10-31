@@ -1,14 +1,14 @@
 import requests
 from faker import Faker
 from api.models import User, EmailConfirmation
-
+from os import environ
 
 fake = Faker()
 
 
 base_url = 'http://localhost:5000'
 # This is actually the http api that mailhog exposes.
-mail_base_url = 'http://localhost:8025'
+mail_base_url = 'http://' + environ.get('MAIL_SERVER') + ':8025'
 
 state = {
     'email': fake.email(),

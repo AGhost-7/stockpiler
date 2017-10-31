@@ -112,6 +112,7 @@
         volumes:
           - "{{buildbot_config_dir}}/workers:/var/lib/buildbot/workers"
           - "{{buildbot_config_dir}}/keys:/home/buildbot/.ssh"
+          - "/run/docker.sock:/var/run/docker.sock"
         env:
           WORKERNAME: "worker{{groups.buildbot_worker.index(inventory_hostname)}}"
           WORKERPASS: "{{buildbot_worker_pass}}"

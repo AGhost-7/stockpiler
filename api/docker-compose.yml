@@ -1,11 +1,5 @@
 version: '3'
 services:
-  api:
-    image: python:3.5.2
-    command: sleep Infinity
-    working_dir: /api
-    # volumes:
-    #   - $PROJECT_DIR/api:/api
   db:
     image: mariadb:10.3
     environment:

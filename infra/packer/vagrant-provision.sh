@@ -17,4 +17,4 @@ chmod 600 ~/.ssh/authorized_keys
 sudo usermod -aG docker vagrant
 
 # this is the port vagrant uses to ssh
-sudo ufw enable 2222
+sudo ufw allow 2222
