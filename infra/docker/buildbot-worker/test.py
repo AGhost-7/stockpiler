@@ -31,6 +31,8 @@ class ComposeService:
         self.container_id = None
 
     def up(self):
+        logging.info('Pulling down image %s', self.config['image'])
+        client.pull(self.config['image'])
         logging.info('Bringing up service %s', self.name)
         endpoint_config = client.create_endpoint_config(
             aliases=[self.name]
