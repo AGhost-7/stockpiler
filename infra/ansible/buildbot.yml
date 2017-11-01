@@ -97,7 +97,7 @@
         env:
           BUILDBOT_DB_URL: "postgresql+psycopg2://{{buildbot_postgres_user}}:{{buildbot_postgres_password}}@{{groups['buildbot_master'][0]}}/{{buildbot_postgres_db}}"
           BUILDBOT_GIT_REPOSITORY: "{{buildbot_git_repository}}"
-          BUILDBOT_URL: "localhost:{{buildbot_web_port}}"
+          BUILDBOT_URL: "http://{{inventory_hostname}}:{{buildbot_web_port}}/"
 
     - name: worker containers
       when: inventory_hostname in groups['buildbot_worker']
@@ -111,7 +111,7 @@
         log_driver: "{{docker_log_driver}}"
         volumes:
           - "{{buildbot_config_dir}}/workers:/var/lib/buildbot/workers"
-          - "{{buildbot_config_dir}}/keys:/home/buildbot/.ssh"
+          - "{{buildbot_config_dir}}/keys:/root/.ssh"
           - "/run/docker.sock:/var/run/docker.sock"
         env:
           WORKERNAME: "worker{{groups.buildbot_worker.index(inventory_hostname)}}"
