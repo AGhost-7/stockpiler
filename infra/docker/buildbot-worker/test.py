@@ -52,7 +52,7 @@ class ComposeService:
         if self.container_id is not None:
             logging.info('Taking down service %s', self.name)
             client.stop(container=self.container_id)
-            client.remove_container(container=self.container_id)
+            # client.remove_container(container=self.container_id)
 
 
 class TestGroup:
