@@ -9,3 +9,5 @@
 [buildbot:children]
 buildbot_master
 buildbot_worker
+[front]
+192.168.50.6

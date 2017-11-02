@@ -19,7 +19,10 @@ sudo apt-get install ufw -y
 sudo ufw reset
 sudo ufw default allow outgoing
 sudo ufw default deny incoming
-sudo ufw allow ssh
+# allow only private addresses to access ssh by default.
+sudo ufw allow from 192.168.0.0/16 to any port ssh
+sudo ufw allow from 10.0.0.0/8 to any port ssh
+sudo ufw allow from 172.16.0.0/12 to any port ssh
 sudo ufw enable
 sudo update-rc.d ufw defaults
 

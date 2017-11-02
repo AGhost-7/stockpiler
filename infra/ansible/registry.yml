@@ -89,6 +89,8 @@
     - name: open the firewall for the registry
       become: yes
       when: inventory_hostname in groups['registry']
+      with_items: groups['all']
       ufw:
+        from_ip: "{{item}}"
         rule: allow
         port: "{{docker_registry_port}}"

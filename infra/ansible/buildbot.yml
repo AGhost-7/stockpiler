@@ -7,14 +7,18 @@
     - name: open the firewall for the web interface
       become: yes
       when: inventory_hostname in groups['buildbot_master']
+      with_items: groups['front']
       ufw:
         rule: allow
+        from_ip: "{{item}}"
         port: "{{buildbot_web_port}}"
 
     - name: open firewall for workers 
       become: yes
       when: inventory_hostname in groups['buildbot_worker']
+      with_items: groups['buildbot_master']
       ufw:
+        from_ip: "{{item}}"
         rule: allow
         port: 9989
 
