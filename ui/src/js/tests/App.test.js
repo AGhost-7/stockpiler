@@ -7,16 +7,25 @@ import { Chrome } from 'navalia';
 const assert = console.assert;
 const baseUrl = 'http://localhost:3000';
 
-it('renders without crashing', () => {
-	const div = document.createElement('div');
-	ReactDOM.render(<App />, div);
-	registerServiceWorker();
-});
+describe('E2E Testing', () => {
 
-it('loads the homepage and verifys the title', () => {
-	loadPageAndVerifyTitle(new Chrome(), baseUrl, 'Stockpiler');
-});
+	let chrome = {};
 
+	beforeEach(() => {
+		chrome = new Chrome();
+	});
+
+	it('renders without crashing', () => {
+		const div = document.createElement('div');
+		ReactDOM.render(<App />, div);
+		registerServiceWorker();
+	});
+
+	it('loads the homepage and verifys the title', () => {
+		loadPageAndVerifyTitle(chrome, baseUrl, 'Stockpiler');
+	});
+
+});
 
 // Helper functions
 // @todo: move in class
