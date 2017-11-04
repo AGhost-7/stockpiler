@@ -1,17 +1,12 @@
 ## Developing
 
-You will need to specify the project directory relative to your host machine
-to get this component running:
-```bash
-export UI_DIR=$PWD
-# or, if you're already in a container
-export UI_DIR=/home/user/location-of-project/ui
-```
+`npm start` will boot up a local dev server and make http://localhost:3000
+available.
 
-After this, run docker compose:
-```bash
-docker-compose up
-```
+`npm test` is currently using phantomjs and navalia.
+
+`npm build` will build the static assets and place them in the _public_ folder
+
 
 
 
