@@ -7,7 +7,7 @@ import { Chrome } from 'navalia';
 const assert = console.assert;
 const baseUrl = 'http://localhost:3000';
 
-describe('E2E Testing', () => {
+describe('Testing', () => {
 
 	let chrome = {};
 
