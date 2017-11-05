@@ -4,11 +4,6 @@
 - hosts: buildbot
   tasks:
 
-    - name: p
-      with_items: "{{groups['front']}}"
-      debug:
-        var: "{{item}}"
-
     - name: open the firewall for the web interface
       become: yes
       when: inventory_hostname in groups['buildbot_master']
