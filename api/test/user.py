@@ -1,6 +1,6 @@
 import requests
 from faker import Faker
-from api.models import User, EmailConfirmation
+# from api.models import User, EmailConfirmation
 from os import environ
 
 fake = Faker()

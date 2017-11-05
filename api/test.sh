@@ -4,6 +4,7 @@
 
 set -e
 
+flake8 {test,api,bin}
 api_create_tables
 api &
 pid=$?
