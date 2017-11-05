@@ -1,0 +1,46 @@
+global
+	tune.ssl.default-dh-param 2048
+
+defaults
+	mode http
+	maxconn 1000
+
+frontend front-http
+	bind *:80
+	redirect scheme https code 301 if !{ ssl_fc }
+
+frontend front-https
+	option httplog
+	log global
+
+	bind *:443 ssl crt /usr/local/etc/haproxy/domain.pem
+
+	acl acme_challenge path_beg /.well-known/acme-challenge/
+	use_backend certbot if acme_challenge
+
+	acl buildbot_subdomain hdr_dom(host) -m beg buildbot.
+	use_backend buildbot if buildbot_subdomain
+
+	acl api_subdomain hdr_dom(host) -m beg api.
+	use_backend api if api_subdomain
+
+	default_backend ui
+
+backend buildbot
+	{% for host in groups['buildbot_master'] %}
+	server server{{loop.index}} {{host}}:8010
+	{% endfor %}
+
+backend api
+	{% for host in groups['api'] %}
+	server server{{loop.index}}-0 {{host}}:3000
+	server server{{loop.index}}-1 {{host}}:3001
+	{% endfor %}
+
+backend ui
+	server server1 127.0.0.1:8000
+
+backend certbot
+	{% for host in groups['certbot'] %}
+	server server{{loop.index}} {{host}}:6000
+	{% endfor %}

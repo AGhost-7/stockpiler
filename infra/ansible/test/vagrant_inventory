@@ -11,3 +11,7 @@ buildbot_master
 buildbot_worker
 [front]
 192.168.50.6
+[api]
+192.168.50.6
+[certbot]
+192.168.50.6

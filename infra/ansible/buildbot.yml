@@ -4,19 +4,24 @@
 - hosts: buildbot
   tasks:
 
+    - name: p
+      with_items: "{{groups['front']}}"
+      debug:
+        var: "{{item}}"
+
     - name: open the firewall for the web interface
       become: yes
       when: inventory_hostname in groups['buildbot_master']
-      with_items: groups['front']
+      with_items: "{{groups['front']}}"
       ufw:
         rule: allow
         from_ip: "{{item}}"
-        port: "{{buildbot_web_port}}"
+        port: 8010
 
     - name: open firewall for workers 
       become: yes
       when: inventory_hostname in groups['buildbot_worker']
-      with_items: groups['buildbot_master']
+      with_items: "{{groups['buildbot_master']}}"
       ufw:
         from_ip: "{{item}}"
         rule: allow
@@ -97,11 +102,13 @@
           - "{{buildbot_config_dir}}/keys:/root/.ssh"
         ports:
           - "9989:9989"
-          - "{{buildbot_web_port}}:8010"
+          - "8010:8010"
         env:
           BUILDBOT_DB_URL: "postgresql+psycopg2://{{buildbot_postgres_user}}:{{buildbot_postgres_password}}@{{groups['buildbot_master'][0]}}/{{buildbot_postgres_db}}"
           BUILDBOT_GIT_REPOSITORY: "{{buildbot_git_repository}}"
-          BUILDBOT_URL: "http://{{inventory_hostname}}:{{buildbot_web_port}}/"
+          BUILDBOT_URL: "{{buildbot_url}}"
+          BUILDBOT_AGHOST_CRED: "{{buildbot_aghost_cred}}"
+          BUILDBOT_SHARDY_CRED: "{{buildbot_shardy_cred}}"
 
     - name: worker containers
       when: inventory_hostname in groups['buildbot_worker']

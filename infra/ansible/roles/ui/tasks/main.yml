@@ -1,0 +1,18 @@
+
+# Just a dummy file for now. Using to test haproxy config, etc.
+
+- name: create index.html
+  file:
+    src: files/index.html
+    dest: "{{ansible_env.HOME}}/index.html"
+    state: file
+
+- name: ensure server is not already up
+  shell: "pkill -9 python3 || true"
+
+- name: bring up server
+  shell: |
+    (
+      cd "{{ansible_env.HOME}}" ;
+      nohup python3 -m http.server 8000 &
+    )

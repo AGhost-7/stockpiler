@@ -1,0 +1,3 @@
+
+- name: reload haproxy
+  shell: docker kill --signal=USR2 haproxy

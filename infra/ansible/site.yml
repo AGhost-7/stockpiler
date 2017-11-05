@@ -1,0 +1,12 @@
+
+# playbook for the loadbalancer, app, database, etc.
+
+- name: haproxy
+  hosts: front
+  roles:
+    - haproxy
+
+- name: ui server
+  hosts: front
+  roles:
+    - ui

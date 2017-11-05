@@ -1,0 +1,34 @@
+
+- name: open firewall for http and https
+  become: yes
+  with_items:
+    - 80
+    - 443
+  ufw:
+    rule: allow
+    port: "{{item}}"
+
+- name: generate haproxy config
+  become: yes
+  register: proxy_config
+  template:
+    dest: /etc/haproxy/haproxy.cfg
+    src: templates/haproxy.cfg.j2
+  notify:
+    - "reload haproxy"
+
+- name: ensure haproxy is running
+  become: yes
+  register: haproxy_container
+  docker_container:
+    network_mode: host
+    name: haproxy
+    image: haproxy:1.7
+    log_driver: "{{docker_log_driver}}"
+    state: started
+    restart_policy: "{{docker_default_restart_policy}}"
+    volumes:
+      - /etc/haproxy:/usr/local/etc/haproxy
+    ports:
+      - 80
+      - 443
