@@ -4,9 +4,11 @@
 - name: haproxy
   hosts: front
   roles:
+    - common
     - haproxy
 
 - name: ui server
   hosts: front
   roles:
+    - common
     - ui

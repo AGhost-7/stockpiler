@@ -3,6 +3,8 @@
 # Generating a self signed ip-based certification
 # https://github.com/docker/distribution/issues/948
 - hosts: all
+  roles:
+    - common
   tasks:
 
     - name: use insecure registry
