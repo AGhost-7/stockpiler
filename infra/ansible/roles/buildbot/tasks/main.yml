@@ -6,15 +6,30 @@
     rule: allow
     from_ip: "{{item}}"
     port: 8010
+  notify:
+    - reload firewall
 
 - name: open firewall for workers 
   become: yes
-  when: inventory_hostname in groups['buildbot_worker']
-  with_items: "{{groups['buildbot_master']}}"
+  when: inventory_hostname in groups['buildbot_master']
+  with_items: "{{groups['buildbot_worker']}}"
   ufw:
     from_ip: "{{item}}"
     rule: allow
     port: 9989
+  notify:
+    - reload firewall
+
+- name: open firewall for database
+  become: yes
+  when: inventory_hostname in groups['buildbot_master_db']
+  with_items: "{{groups['buildbot_master']}}"
+  ufw:
+    from_ip: "{{item}}"
+    rule: allow
+    port: 5432
+  notify:
+    - reload firewall
 
 - name: Create config directory
   become: yes
@@ -61,7 +76,7 @@
     name: "{{docker_registry_name}}/buildbot-worker"
 
 - name: master db container
-  when: inventory_hostname in groups['buildbot_master']
+  when: inventory_hostname in groups['buildbot_master_db']
   become: yes
   docker_container:
     name: buildbot_master_db

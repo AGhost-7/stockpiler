@@ -96,3 +96,5 @@
         from_ip: "{{item}}"
         rule: allow
         port: "{{docker_registry_port}}"
+      notify:
+        - reload firewall
