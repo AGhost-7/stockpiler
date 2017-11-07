@@ -1,4 +1,6 @@
 - name: build certbot image
+  delegate_to: localhost
+  register: certbot_image
   docker_image:
     push: yes
     force: yes
@@ -15,12 +17,12 @@
     - 80
     - 54001
   ufw:
-    role: allow
+    rule: allow
     port: "{{item}}"
 
 - name: certbot container
   docker_container:
-    image: "{{docker_registry_name}}/certbot"
+    image: "{{certbot_image.image['RepoDigests'][0]}}"
     name: certbot
     ports:
       - 54001:54001
@@ -31,3 +33,9 @@
       - /etc/haproxy/certs:/etc/haproxy/certs
     state: started
     log_driver: "{{docker_log_driver}}"
+
+- name: reload haproxy when certbot runs
+  cron:
+    job: docker kill --signal=USR2 haproxy
+    minute: 45
+    hour: 2

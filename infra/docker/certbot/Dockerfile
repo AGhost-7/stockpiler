@@ -1,10 +1,7 @@
 FROM certbot/certbot
 
 # {{{ install tini for collecting zombie processes
-ENV TINI_VERSION v0.16.1
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /sbin/tini
-RUN chmod +x /sbin/tini
-ENTRYPOINT ["/sbin/tini", "--"]
+RUN apk add --no-cache tini
 # }}}
 
 # {{{ install cron job runner
@@ -29,4 +26,4 @@ COPY ./renew-hook.sh /renew-hook.sh
 
 # }}}
 
-CMD ["supercronic", "/etc/crontab"]
+CMD ["/usr/local/bin/supercronic", "/etc/crontab"]
