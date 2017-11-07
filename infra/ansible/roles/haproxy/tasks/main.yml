@@ -27,8 +27,9 @@
     log_driver: "{{docker_log_driver}}"
     state: started
     restart_policy: "{{docker_default_restart_policy}}"
+    command: haproxy -f /etc/haproxy/haproxy.cfg
     volumes:
-      - /etc/haproxy:/usr/local/etc/haproxy
+      - /etc/haproxy:/etc/haproxy
     ports:
       - 80
       - 443

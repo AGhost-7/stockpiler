@@ -1,0 +1,4 @@
+- name: certbot
+  hosts: front
+  roles:
+    - certbot

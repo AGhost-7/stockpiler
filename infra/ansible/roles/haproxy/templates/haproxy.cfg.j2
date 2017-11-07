@@ -13,7 +13,7 @@ frontend front-https
 	option httplog
 	log global
 
-	bind *:443 ssl crt /usr/local/etc/haproxy/domain.pem
+	bind *:443 ssl crt /etc/haproxy/certs/stockpiler.ca.pem
 
 	acl acme_challenge path_beg /.well-known/acme-challenge/
 	use_backend certbot if acme_challenge

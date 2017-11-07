@@ -1,1 +1,33 @@
-- name: Install certbot
+- name: build certbot image
+  docker_image:
+    push: yes
+    force: yes
+    path: ../docker/certbot
+    name: "{{docker_registry_name}}/cerbot"
+
+- name: generate init script
+  template:
+    src: templates/certbot.sh.j2
+    dest: "{{ansible_env.HOME}}/certbot.sh"
+
+- name: open firewall for certbot
+  with_items:
+    - 80
+    - 54001
+  ufw:
+    role: allow
+    port: "{{item}}"
+
+- name: certbot container
+  docker_container:
+    image: "{{docker_registry_name}}/certbot"
+    name: certbot
+    ports:
+      - 54001:54001
+    recreate: yes
+    restart_policy: "{{docker_default_restart_policy}}"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/haproxy/certs:/etc/haproxy/certs
+    state: started
+    log_driver: "{{docker_log_driver}}"
