@@ -24,8 +24,7 @@
   docker_container:
     image: "{{certbot_image.image['RepoDigests'][0]}}"
     name: certbot
-    ports:
-      - 54001:54001
+    network_mode: host
     recreate: yes
     restart_policy: "{{docker_default_restart_policy}}"
     volumes:

@@ -83,6 +83,7 @@
     image: "postgres:9.6"
     restart_policy: "{{docker_default_restart_policy}}"
     state: started
+    network_mode: host
     log_driver: "{{docker_log_driver}}"
     env:
       POSTGRES_USER: "{{buildbot_postgres_user}}"
@@ -90,8 +91,6 @@
       POSTGRES_DB: "{{buildbot_postgres_db}}"
     volumes:
       - /var/lib/postgresql/data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
 - name: master container
   when: inventory_hostname in groups['buildbot_master']
@@ -107,9 +106,6 @@
     volumes:
       - "{{buildbot_config_dir}}/workers:/var/lib/buildbot/workers"
       - "{{buildbot_config_dir}}/keys:/root/.ssh"
-    ports:
-      - "9989:9989"
-      - "8010:8010"
     env:
       BUILDBOT_DB_URL: "postgresql+psycopg2://{{buildbot_postgres_user}}:{{buildbot_postgres_password}}@{{groups['buildbot_master'][0]}}/{{buildbot_postgres_db}}"
       BUILDBOT_GIT_REPOSITORY: "{{buildbot_git_repository}}"

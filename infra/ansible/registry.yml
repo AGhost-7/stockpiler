@@ -75,6 +75,7 @@
       when: inventory_hostname in groups['registry']
       docker_container:
         name: registry
+        network_mode: host
         restart_policy: "{{docker_default_restart_policy}}"
         state: started
         image: registry:2
@@ -85,8 +86,6 @@
         volumes:
         #  - /etc/registry/certs:/certs
           - /var/lib/registry:/var/lib/registry
-        ports:
-          - "{{docker_registry_port}}:5000"
 
     - name: open the firewall for the registry
       become: yes
