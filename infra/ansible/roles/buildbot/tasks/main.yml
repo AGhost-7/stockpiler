@@ -121,6 +121,7 @@
   when: inventory_hostname in groups['buildbot_worker']
   become: yes
   docker_container:
+    network_mode: host
     recreate: yes
     name: "worker{{groups.buildbot_worker.index(inventory_hostname)}}"
     image: "{{buildbot_worker_image.image['RepoDigests'][0]}}"
