@@ -2,6 +2,7 @@ FROM certbot/certbot
 
 # {{{ install tini for collecting zombie processes
 RUN apk add --no-cache tini
+ENTRYPOINT ["/sbin/tini", "--"]
 # }}}
 
 # {{{ install cron job runner

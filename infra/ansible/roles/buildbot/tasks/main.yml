@@ -88,6 +88,8 @@
       POSTGRES_USER: "{{buildbot_postgres_user}}"
       POSTGRES_PASSWORD: "{{buildbot_postgres_password}}"
       POSTGRES_DB: "{{buildbot_postgres_db}}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
@@ -95,6 +97,7 @@
   when: inventory_hostname in groups['buildbot_master']
   become: yes
   docker_container:
+    network_mode: host
     recreate: yes
     name: buildbot_master
     image: "{{buildbot_master_image.image['RepoDigests'][0]}}"
