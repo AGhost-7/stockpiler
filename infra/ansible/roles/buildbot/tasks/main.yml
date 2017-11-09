@@ -1,3 +1,9 @@
+
+- name: worker swapfile
+  when: inventory_hostname in groups['buildbot_worker']
+  include_role:
+    name: swap
+
 - name: open the firewall for the web interface
   become: yes
   when: inventory_hostname in groups['buildbot_master']
