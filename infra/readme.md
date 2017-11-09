@@ -21,6 +21,23 @@ Just...
 vagrant up
 ```
 
+### Bring up the system
+Login:
+```
+vagrant ssh
+cd /vagrant/ansible
+```
+
+Ping your servers to check that everything is in place:
+```
+ansible -m ping -i test/vagrant_inventory all
+```
+
+Run the main playbook:
+```
+ansible-playbook -i test/vagrant_inventory site.yml
+```
+
 ## Ramblings...
 - avoid unreproducible machine state:
 	- build packer images.
@@ -37,13 +54,13 @@ Goal for this is to have an initial PoC setup.
 
 - web:
 	- certbot
-	- front1 (blue)
-	- front2 (green)
-	- api1 (blue)
-	- api2 (green)
+	- ui1
+	- ui2
+	- api1
+	- api2
 	- load balancer
 - database
-- ci:
+- build:
 	- buildbot master
 	- buildbot slave
 	- registry

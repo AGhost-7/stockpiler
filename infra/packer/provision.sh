@@ -67,5 +67,24 @@ sudo apt-get update
 sudo apt-get install docker-ce=17.09.0~ce-0~ubuntu -y
 sudo systemctl enable docker
 
-# }}
+# }}}
 
+# {{{ docker gc
+
+sudo curl -L -o /usr/local/bin/docker-gc \
+	https://raw.githubusercontent.com/spotify/docker-gc/bb9580df7205da8498f41a5be05aeaeeff012f54/docker-gc
+
+docker_gc_sha='98ea7fa6630aa2e31d5da58033b07cf09cdbd94b0847c167631e346c1fbc2586'
+if [ "$(shasum -a 256 /usr/local/bin/docker-gc | cut -d ' ' -f 1)" != "$docker_gc_sha" ]; then
+	echo 'Checksum for docker-gc does not match'
+	exit 1
+fi
+
+sudo chmod +x /usr/local/bin/docker-gc
+
+sudo tee /etc/cron.hourly/docker-gc <<CRON
+#!/usr/bin/env bash
+FORCE_IMAGE_REMOVAL=1 MINIMUM_IMAGES_TO_SAVE=10 /usr/local/bin/docker-gc
+CRON
+sudo chmod +x /etc/cron.hourly/docker-gc
+# }}}

@@ -11,7 +11,9 @@ Vagrant.configure("2") do |config|
 		machine.vm.network "private_network", ip: '192.168.50.2'
 		machine.vm.provision 'shell', privileged: false, inline: <<-SCRIPT
 		sudo pip install ansible
+		cat /vagrant/ansible/test/vagrant_key.pub >> ~/.ssh/authorized_keys
 		cat /vagrant/ansible/test/vagrant_key > ~/.ssh/id_rsa
+		chmod 600 ~/.ssh/id_rsa
 		SCRIPT
 		machine.vm.synced_folder "~/.ssh", "/home/vagrant/.ssh-host"
 	end
@@ -31,6 +33,8 @@ Vagrant.configure("2") do |config|
 			machine.vm.network "private_network", ip: ip
 			machine.vm.provision "shell", privileged: false, inline: <<-SCRIPT
 			cat /vagrant/ansible/test/vagrant_key.pub >> ~/.ssh/authorized_keys
+			sudo mkdir -p /etc/haproxy/certs
+			cat /vagrant/ansible/test/stockpiler.ca.{crt,key} | sudo tee /etc/haproxy/certs/stockpiler.ca.pem
 			SCRIPT
 		end
 	end

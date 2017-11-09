@@ -1,5 +1,17 @@
 
-# playbook for the loadbalancer, app, database, etc.
+# playbook to bring up entire site.
+
+- name: registry
+  hosts: all
+  roles:
+    - common
+    - registry
+
+- name: buildbot
+  hosts: buildbot
+  roles:
+    - common
+    - buildbot
 
 - name: haproxy
   hosts: front
@@ -12,3 +24,4 @@
   roles:
     - common
     - ui
+
