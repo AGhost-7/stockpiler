@@ -113,7 +113,7 @@
       BUILDBOT_AGHOST_CRED: "{{buildbot_aghost_cred}}"
       BUILDBOT_SHARDY_CRED: "{{buildbot_shardy_cred}}"
       BUILDBOT_GITHUB_API_TOKEN: "{{buildbot_github_api_token}}"
-      BUIDLBOT_GITHUB_WEBHOOK_SECRET: "{{buildbot_github_webhook_secret}}"
+      BUILDBOT_GITHUB_WEBHOOK_SECRET: "{{buildbot_github_webhook_secret}}"
 
 - name: worker containers
   when: inventory_hostname in groups['buildbot_worker']
