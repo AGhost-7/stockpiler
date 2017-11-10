@@ -1,0 +1,33 @@
+
+- name: Check if swapfile exists
+  register: swap_exists
+  stat:
+    path: /swapfile
+
+- name: Allocate file
+  when: not swap_exists.stat.exists
+  become: yes
+  command: "fallocate -l {{swap_size}} /swapfile"
+
+- name: Ensure swap permissions are correct
+  become: yes
+  file:
+    path: /swapfile
+    mode: 0600
+
+- name: Make into swap
+  when: not swap_exists.stat.exists
+  become: yes
+  command: mkswap /swapfile
+
+- name: Ensure mount entry is in fstab
+  become: yes
+  lineinfile:
+    dest: /etc/fstab
+    regexp: /swapfile
+    line: "/swapfile none swap defaults 0 0"
+
+- name: Ensure the swap is enabled
+  when: not swap_exists.stat.exists
+  become: yes
+  command: swapon -a
