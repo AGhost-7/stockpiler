@@ -167,7 +167,8 @@ DELETE /v1/locations/:locationId/devices/:deviceId
 
 ```
 virtualenv env
-pip install --editable .[dev]
+pip install -r requirements.txt
+pip install --editable .
 docker-compose up
 api
 ```

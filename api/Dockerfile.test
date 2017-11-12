@@ -1,0 +1,24 @@
+# vim: set ft=dockerfile:
+
+FROM python:3.5.2
+
+WORKDIR /test
+
+COPY ./requirements.txt /test/requirements.txt
+
+RUN pip install -r requirements.txt
+
+COPY ./setup.py /test/setup.py
+COPY ./bin /test/bin
+COPY ./api /test/api
+COPY ./test /test/test
+
+COPY ./test.sh /test/test.sh
+
+RUN pip install --editable .
+
+ENV SQLALCHEMY_DATABASE_URI mysql+pymysql://root:root@db:3306/test
+
+ENV MAIL_SERVER mail
+
+CMD ["./test.sh"]

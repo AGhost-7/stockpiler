@@ -1,0 +1,5 @@
+- name: registry
+  hosts: all
+  roles:
+    - common
+    - registry

@@ -1,0 +1,27 @@
+
+# playbook to bring up entire site.
+
+- name: registry
+  hosts: all
+  roles:
+    - common
+    - registry
+
+- name: buildbot
+  hosts: buildbot
+  roles:
+    - common
+    - buildbot
+
+- name: haproxy
+  hosts: front
+  roles:
+    - common
+    - haproxy
+
+- name: ui server
+  hosts: front
+  roles:
+    - common
+    - ui
+

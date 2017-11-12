@@ -1,0 +1,54 @@
+
+- name: use insecure registry
+  become: yes
+  register: daemon_config
+  template:
+    dest: /etc/docker/daemon.json
+    src: templates/daemon.json.j2
+
+- name: restart daemon
+  become: yes
+  when: daemon_config.changed
+  systemd:
+    state: restarted
+    name: docker
+
+- name: use insecure local registry
+  delegate_to: localhost
+  become: yes
+  register: daemon_config
+  template:
+    dest: /etc/docker/daemon.json
+    src: templates/daemon.json.j2
+
+- name: restart local daemon
+  delegate_to: localhost
+  become: yes
+  when: daemon_config.changed
+  systemd:
+    state: restarted
+    name: docker
+
+- name: bring up the registry
+  become: yes
+  when: inventory_hostname in groups['registry']
+  docker_container:
+    name: registry
+    network_mode: host
+    restart_policy: "{{docker_default_restart_policy}}"
+    state: started
+    image: registry:2
+    log_driver: "{{docker_log_driver}}"
+    volumes:
+      - /var/lib/registry:/var/lib/registry
+
+- name: open the firewall for the registry
+  become: yes
+  when: inventory_hostname in groups['registry']
+  with_items: "{{groups['all']}}"
+  ufw:
+    from_ip: "{{item}}"
+    rule: allow
+    port: "{{docker_registry_port}}"
+  notify:
+    - reload firewall

@@ -1,3 +1,5 @@
 *.box
 .vagrant/
 packer/packer_cache/
+*.vdi
+*.swp
