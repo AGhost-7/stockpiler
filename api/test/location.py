@@ -94,3 +94,16 @@ def test_update_location_item():
         '/v1/locations/' + location_id + '/items/' + item['id'], json=body)
     assert response.status_code == 200
     assert response.json()['quantity'] == body['quantity']
+
+
+def test_list_location_item():
+    response = owner.requests.get(
+        '/v1/locations/' + location_id + '/items')
+    assert response.status_code == 200
+    item = response.json()[0]
+
+    response = owner.requests.get(
+        '/v1/locations/' + location_id + '/items?offset=1')
+    assert response.status_code == 200
+    offset_items = response.json()
+    assert len(offset_items) == 0 or offset_items[0].id != item.id

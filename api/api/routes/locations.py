@@ -3,6 +3,7 @@ from api.models import User, Location, LocationMember, Item, ItemStock
 from api.auth import authenticated, current_user_id
 from api.error import error
 from flask import Blueprint, request, jsonify
+from api.validation import list_parser
 
 
 locations = Blueprint('locations', __name__, url_prefix='/v1/locations')
@@ -30,6 +31,8 @@ def create_location():
 @locations.route('', methods=['GET'])
 @authenticated(['user'])
 def list_locations():
+    parser = list_parser()
+    args = parser.parse_args()
     user_id = current_user_id()
     locations = Location \
         .query \
@@ -37,6 +40,8 @@ def list_locations():
         .filter(
             LocationMember.user_id == user_id or
             Location.owner_id == user_id) \
+        .offset(args['offset']) \
+        .limit(args['limit']) \
         .all()
 
     return jsonify([location.to_dict() for location in locations])
@@ -61,10 +66,14 @@ def add_location_member(location_id, member_id):
 @locations.route('/<location_id>/members')
 @authenticated(['user'])
 def list_location_members(location_id):
+    parser = list_parser()
+    args = parser.parse_args()
     members = User \
         .query \
         .join(LocationMember, LocationMember.user_id == User.id) \
         .filter(LocationMember.location_id == location_id) \
+        .offset(args['offset']) \
+        .limit(args['limit']) \
         .all()
 
     return jsonify([member.to_dict() for member in members])
@@ -123,3 +132,22 @@ def update_location_item(location_id, item_id):
     db.session.commit()
 
     return jsonify(item.with_stock(item_stock))
+
+
+@locations.route('/<location_id>/items', methods=['GET'])
+@authenticated(['user'])
+def list_location_items(location_id):
+    parser = list_parser()
+    args = parser.parse_args()
+    items = db \
+        .session \
+        .query(Item, ItemStock) \
+        .join(ItemStock) \
+        .filter(ItemStock.location_id == location_id) \
+        .limit(args['limit']) \
+        .offset(args['offset']) \
+        .all()
+
+    result = [item.with_stock(item_stock) for (item, item_stock) in items]
+
+    return jsonify(result)
