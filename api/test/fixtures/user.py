@@ -41,7 +41,9 @@ class UserFixture:
 
 owner = UserFixture('aghost7@gmail.com', 'password123')
 employee = UserFixture('foo@bar.com', 'password')
-users = [owner, employee]
+snek = UserFixture('snek@tss', '123')
+
+users = [owner, employee, snek]
 
 for user in users:
     user.ensure_created()

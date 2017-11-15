@@ -1,5 +1,5 @@
 from api.models import Location
-from .fixtures.user import owner, employee
+from .fixtures.user import owner, employee, snek
 from faker import Faker
 from .util.session import create_session
 from .util.func import call_once
@@ -30,7 +30,8 @@ def test_create_location():
 
 
 def test_list_own_locations():
-    response = owner.requests.get('/v1/locations')
+    response = owner.requests.get('/v1/locations?limit=100')
+    assert response.status_code == 200
     locations = response.json()
     matches = [
         location
@@ -42,11 +43,21 @@ def test_list_own_locations():
     location_id = matches[0]['id']
 
 
+def test_list_owner_locations_limit():
+    response = owner.requests.get('/v1/locations?limit=200')
+    assert response != 200
+
+
 def test_add_location_member():
-    print('location_id', location_id, 'employee.id', employee.id)
     response = owner.requests.post(
         '/v1/locations/' + location_id + '/members/' + employee.id)
     assert response.status_code == 200
+
+
+def test_add_location_member_employee():
+    response = employee.requests.post(
+        '/v1/locations/' + location_id + '/members/' + snek.id)
+    assert response.status_code == 403
 
 
 def test_list_location_members():

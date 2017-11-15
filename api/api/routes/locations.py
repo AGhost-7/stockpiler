@@ -1,16 +1,16 @@
 from api.db import db
 from api.models import User, Location, LocationMember, Item, ItemStock
-from api.auth import authenticated, current_user_id
+from api.auth import current_user_id
 from api.error import error
 from flask import Blueprint, request, jsonify
 from api.validation import list_parser
-
+from api.control import control
 
 locations = Blueprint('locations', __name__, url_prefix='/v1/locations')
 
 
 @locations.route('', methods=['POST'])
-@authenticated(['user'])
+@control.authorize(['user'])
 def create_location():
     body = request.get_json()
     owner_id = body['owner_id']
@@ -29,7 +29,7 @@ def create_location():
 
 
 @locations.route('', methods=['GET'])
-@authenticated(['user'])
+@control.authorize(['user'])
 def list_locations():
     parser = list_parser()
     args = parser.parse_args()
@@ -48,14 +48,11 @@ def list_locations():
 
 
 @locations.route('/<location_id>/members/<member_id>', methods=['POST'])
-@authenticated(['user'])
+@control.authorize(['owner'])
 def add_location_member(location_id, member_id):
     location = Location.query.get(location_id)
     if location is None:
         return error.not_found('Invalid location')
-    if location.owner_id != current_user_id():
-        return error.unauthorized(
-            'Cannot modify location members unless owner of location')
     else:
         member = LocationMember(user_id=member_id, location_id=location_id)
         db.session.add(member)
@@ -64,7 +61,7 @@ def add_location_member(location_id, member_id):
 
 
 @locations.route('/<location_id>/members')
-@authenticated(['user'])
+@control.authorize(['location'])
 def list_location_members(location_id):
     parser = list_parser()
     args = parser.parse_args()
@@ -80,7 +77,7 @@ def list_location_members(location_id):
 
 
 @locations.route('/<location_id>/members/<member_id>', methods=['DELETE'])
-@authenticated(['user'])
+@control.authorize(['owner'])
 def delete_location_member(location_id, member_id):
     affected_records = LocationMember \
         .query \
@@ -96,7 +93,7 @@ def delete_location_member(location_id, member_id):
 
 
 @locations.route('/<location_id>/items', methods=['POST'])
-@authenticated(['user'])
+@control.authorize(['location'])
 def add_location_item(location_id):
     body = request.get_json()
 
@@ -113,7 +110,7 @@ def add_location_item(location_id):
 
 
 @locations.route('/<location_id>/items/<item_id>', methods=['PUT'])
-@authenticated(['user'])
+@control.authorize(['location'])
 def update_location_item(location_id, item_id):
     body = request.get_json()
 
@@ -135,7 +132,7 @@ def update_location_item(location_id, item_id):
 
 
 @locations.route('/<location_id>/items', methods=['GET'])
-@authenticated(['user'])
+@control.authorize(['location'])
 def list_location_items(location_id):
     parser = list_parser()
     args = parser.parse_args()
