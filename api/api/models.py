@@ -26,7 +26,6 @@ class TrackCreations:
 
 
 class User(db.Model):
-    __tablename__ = 'user'
     id = Id()
     email = Column(String(256), nullable=False, unique=True)
     password = Column(BLOB(60), nullable=False)
@@ -41,13 +40,12 @@ class User(db.Model):
 
 
 class EmailConfirmation(db.Model):
-    __tablename__ = 'email_confirmation'
+
     id = Id()
     user_id = Column(ForeignKey('user.id'), nullable=False)
 
 
 class Location(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'location'
 
     id = Id()
     owner_id = Column(ForeignKey('user.id'), nullable=False)
@@ -62,7 +60,6 @@ class Location(db.Model, TrackCreations, TrackUpdates):
 
 
 class LocationMember(db.Model, TrackCreations):
-    __tablename__ = 'location_access'
 
     location_id = Column(ForeignKey('location.id'), nullable=False)
     user_id = Column(ForeignKey('user.id'), nullable=False)
@@ -76,7 +73,6 @@ class LocationMember(db.Model, TrackCreations):
 
 
 class Item(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'item'
     id = Id()
     name = Column(String(256), nullable=False)
     price = Column(Numeric(15, 2))
@@ -97,7 +93,6 @@ class Item(db.Model, TrackCreations, TrackUpdates):
 
 # Split into two tables to avoid having migration pains when I add orgs.
 class ItemStock(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'item_stock'
 
     item_id = Column(ForeignKey('item.id'), nullable=False)
     location_id = Column(ForeignKey('location.id'), nullable=False)
