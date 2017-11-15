@@ -3,6 +3,7 @@ from faker import Faker
 from api.models import User, EmailConfirmation
 from .util.session import create_session
 from os import environ
+import re
 
 fake = Faker()
 
@@ -38,7 +39,7 @@ def test_user_registration_email():
     messages = response.json()
     assert len(messages) == 1
     email_body = messages[0]['MIME']['Parts'][0]['MIME']['Parts'][0]['Body']
-    id = email_body.split('\n')[1]
+    id = re.findall('.+/email-confirmation/([a-z0-9-]+)', email_body)[0]
     with create_session() as session:
         confirmation = session.query(EmailConfirmation).get(id)
         assert confirmation is not None

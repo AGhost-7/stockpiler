@@ -5,6 +5,7 @@ from api.models import User, EmailConfirmation
 from flask import request, jsonify, Blueprint
 from api.mail import send_mail
 from api.auth import create_token
+from api.config import config
 
 
 users = Blueprint('users', __name__, url_prefix='/v1/users')
@@ -24,7 +25,9 @@ def register():
     db.session.add(confirmation)
 
     db.session.commit()
-    send_mail('confirm-email', [email], id=confirmation.id)
+    confirmation_url = config['BASE_URL'] + '/email-confirmation/' + \
+        confirmation.id
+    send_mail('confirm-email', [email], confirmation_url=confirmation_url)
 
     return jsonify(user.to_dict())
 
