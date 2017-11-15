@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import logo from '../img/logo.svg';
-import '../css/App.css';
+import React, { Component } from 'react'
+import logo from '../img/logo.svg'
+import '../css/App.css'
 
 class App extends Component {
 	render() {
@@ -12,8 +12,8 @@ class App extends Component {
 				</header>
 				<p className="App-intro">Stock management and organized sales tracking.</p>
 			</div>
-		);
+		)
 	}
 }
 
-export default App;
+export default App
