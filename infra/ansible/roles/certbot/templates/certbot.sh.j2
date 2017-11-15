@@ -7,7 +7,7 @@ sub_domains='www buildbot api staging'
 domains='stockpiler.ca'
 
 for sub_domain in $sub_domains; do
-	domains=",$sub_domain.stockpiler.ca"
+	domains="$domains,$sub_domain.stockpiler.ca"
 done
 
 docker run --rm \
