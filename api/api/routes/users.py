@@ -23,8 +23,8 @@ def register():
     confirmation = EmailConfirmation(user_id=user.id)
     db.session.add(confirmation)
 
-    send_mail('confirm-email', [email], id=confirmation.id)
     db.session.commit()
+    send_mail('confirm-email', [email], id=confirmation.id)
 
     return jsonify(user.to_dict())
 

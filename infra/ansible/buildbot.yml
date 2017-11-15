@@ -1,0 +1,7 @@
+
+# spin up the buildbot ci/cd server out of thin air.
+
+- hosts: buildbot
+  roles:
+    - common
+    - buildbot

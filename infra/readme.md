@@ -21,14 +21,32 @@ Just...
 vagrant up
 ```
 
-## Ramblings...
-- avoid unreproducible machine state:
-	- build packer images.
-	- use docker containers.
-- share configs:
-	- build images for vagrant and prod from the same configs/scripts.
-	- use the same compose file for running ci and testing locally.
-- Terraform+ansible?
+### Configure Github Integrations
+You will need to specify the following variables in `ansible/group_vars/all`
+for the buildbot server to work correctly:
+```yaml
+buildbot_github_api_token: ''
+buildbot_oauth_id: ''
+buildbot_oauth_secret: ''
+buildbot_github_webhook_secret: ''
+```
+
+### Bring up the system
+Login:
+```
+vagrant ssh
+cd /vagrant/ansible
+```
+
+Ping your servers to check that everything is in place:
+```
+ansible -m ping -i test/vagrant_inventory all
+```
+
+Run the main playbook:
+```
+ansible-playbook -i test/vagrant_inventory site.yml
+```
 
 ## Topology
 
@@ -37,13 +55,13 @@ Goal for this is to have an initial PoC setup.
 
 - web:
 	- certbot
-	- front1 (blue)
-	- front2 (green)
-	- api1 (blue)
-	- api2 (green)
+	- ui1
+	- ui2
+	- api1
+	- api2
 	- load balancer
 - database
-- ci:
+- build:
 	- buildbot master
 	- buildbot slave
 	- registry

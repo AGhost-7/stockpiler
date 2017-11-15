@@ -1,17 +1,28 @@
 {
 	"builders": [
 		{
+			"name": "digitalocean",
 			"type": "digitalocean",
 			"api_token": "{{user `api_token`}}",
-			"snapshot_name": "stockpiler-ubuntu-16.04-amd64",
+			"snapshot_name": "xenial-base",
 			"region": "TOR1",
 			"size": "512mb",
 			"image": "ubuntu-16-04-x64",
 			"ssh_username": "root"
 		},
 		{
-			"type": "virtualbox-iso",
+			"name": "orchestration",
+			"type": "digitalocean",
+			"api_token": "{{user `api_token`}}",
+			"snapshot_name": "xenial-orchestration",
+			"region": "TOR1",
+			"size": "512mb",
+			"image": "ubuntu-16-04-x64",
+			"ssh_username": "root"
+		},
+		{
 			"name": "vagrant",
+			"type": "virtualbox-iso",
 			"guest_os_type": "Ubuntu_64",
 			"iso_url": "http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-server-amd64.iso",
 			"iso_checksum": "a06cd926f5855d4f21fb4bc9978a35312f815fbda0d0ef7fdc846861f4fc4600",
@@ -53,6 +64,15 @@
 			"only": ["vagrant"],
 			"type": "shell",
 			"script": "vagrant-provision.sh"
+		},
+		{
+			"only": ["orchestration"],
+			"type": "shell",
+			"inline": [
+				"ufw allow ssh",
+				"ufw --force reload",
+				"pip install ansible"
+			]
 		}
 	],
 	"post-processors": [

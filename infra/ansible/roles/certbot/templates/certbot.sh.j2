@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# This script runs certbot for the first time to validate the
+# domains. Renewal requests are otherwise handled automatically.
+
+sub_domains='www buildbot api staging'
+domains='stockpiler.ca'
+
+for sub_domain in $sub_domains; do
+	domains="$domains,$sub_domain.stockpiler.ca"
+done
+
+docker run --rm \
+		-p 80:80 \
+		-p 443:443 \
+		-ti \
+		-v /etc/letsencrypt:/etc/letsencrypt \
+		{{docker_registry_name}}/certbot \
+		certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d "$domains"
