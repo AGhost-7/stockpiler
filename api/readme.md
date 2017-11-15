@@ -1,10 +1,20 @@
-## API
-Note: After being authenticated, you will need to pass in your authentication
-token in the http `Authorization` header like so:
+# API
+Backend used by stockpiler.
+
+## Authentication
+After being authenticated, you will need to pass in your authentication token
+in the http `Authorization` header like so:
 
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIXVCJ9TJVA95OrM7E20RMHrHDcEfxjoYZgeFONFh7HgQ
 ```
+
+## Pagination
+
+All list endpoints have an optional `limit` and `offset` query parameter. By
+default, `limit` is set to 20 (maximum of 100), and `offset` is by default 0.
+
+## Endpoints
 
 ### User
 
@@ -118,10 +128,6 @@ quantity or change the name of an inventory item will result in a 400 response.
 ```
 GET /v1/locations/:locationId/items
 ```
-
-Query parameters:
-- `page`: Pagination is done in chunks of 20. If not specifed this will default
-to displaying the first page.
 
 ### Item Logs
 
