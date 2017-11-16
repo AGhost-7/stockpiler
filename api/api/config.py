@@ -8,7 +8,7 @@ config = {
 
     'SQLALCHEMY_DATABASE_URI': environ.get(
         'SQLALCHEMY_DATABASE_URI',
-        'mysql+pymysql://root:root@localhost:3306/test'),
+        'postgresql+psycopg2://postgres:test@localhost:5432/test'),
     'SQLALCHEMY_ECHO': True,
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
 

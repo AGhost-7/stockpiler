@@ -1,7 +1,8 @@
 from .db import db
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, BLOB, ForeignKey, DateTime, \
+from sqlalchemy import Column, String, Boolean, ForeignKey, DateTime, \
     PrimaryKeyConstraint, Integer, Numeric
+from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.sql import func as sqlfunc
 from uuid import uuid4
 
@@ -28,7 +29,7 @@ class TrackCreations:
 class User(db.Model):
     id = Id()
     email = Column(String(256), nullable=False, unique=True)
-    password = Column(BLOB(60), nullable=False)
+    password = Column(BYTEA(60), nullable=False)
     email_confirmed = Column(Boolean(), nullable=False, default=False)
 
     def to_dict(self):
