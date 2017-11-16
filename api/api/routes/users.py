@@ -6,6 +6,7 @@ from flask import request, jsonify, Blueprint
 from api.mail import send_mail
 from api.auth import create_token
 from api.config import config
+from api.validation import simple_parser
 
 
 users = Blueprint('users', __name__, url_prefix='/v1/users')
@@ -13,10 +14,14 @@ users = Blueprint('users', __name__, url_prefix='/v1/users')
 
 @users.route('/register', methods=['POST'])
 def register():
-    body = request.get_json()
-    email = body['email']
+    parser = simple_parser()
+    parser.add_argument('email', type=str, required=True)
+    parser.add_argument('password', type=str, required=True)
+    args = parser.parse_args()
 
-    hashed = bcrypt.hashpw(bytes(body['password'], 'utf8'), bcrypt.gensalt())
+    email = args['email']
+
+    hashed = bcrypt.hashpw(bytes(args['password'], 'utf8'), bcrypt.gensalt())
     user = User(email=email, password=hashed)
     db.session.add(user)
     db.session.flush()
@@ -27,6 +32,7 @@ def register():
     db.session.commit()
     confirmation_url = config['BASE_URL'] + '/email-confirmation/' + \
         confirmation.id
+
     send_mail('confirm-email', [email], confirmation_url=confirmation_url)
 
     return jsonify(user.to_dict())
@@ -34,7 +40,11 @@ def register():
 
 @users.route('/confirm-email/<id>')
 def confirm_email(id):
-    confirmation = EmailConfirmation.query.get(id)
+    parser = simple_parser()
+    parser.add_argument('id', type=str, required=True, location='view_args')
+    args = parser.parse_args()
+
+    confirmation = EmailConfirmation.query.get(args['id'])
     if confirmation is None:
         return error.not_found('Link is invalid')
     else:

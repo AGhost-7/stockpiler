@@ -25,3 +25,7 @@ def list_parser():
     parser.add_argument(
         'offset', default=0, location='args', type=non_negative_int)
     return parser
+
+
+def simple_parser():
+    return RequestParser()

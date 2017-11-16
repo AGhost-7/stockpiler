@@ -47,14 +47,13 @@ def test_user_registration_email():
 
 
 def test_user_confirmation():
-    def assert_response(id, status):
-        response = requests.get(
-            base_url + '/v1/users/confirm-email/' + id)
+    response = requests.get(
+        base_url + '/v1/users/confirm-email/boom')
+    assert response.status_code >= 400
 
-        assert response.status_code == status
-
-    assert_response('booom', 404)
-    assert_response(state['confirmation_id'], 200)
+    response = requests.get(
+        base_url + '/v1/users/confirm-email/' + state['confirmation_id'])
+    assert response.status_code == 200
 
 
 def test_user_login():

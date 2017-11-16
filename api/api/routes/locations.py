@@ -1,10 +1,12 @@
 from api.db import db
-from api.models import User, Location, LocationMember, Item, ItemStock
+from api.models import User, Location, LocationMember, Item, ItemStock, \
+    ItemLog, ItemStockLog
 from api.auth import current_user_id
 from api.error import error
 from flask import Blueprint, request, jsonify, g
 from api.validation import list_parser
 from api.control import control
+from uuid import uuid4
 
 locations = Blueprint('locations', __name__, url_prefix='/v1/locations')
 
@@ -103,13 +105,36 @@ def delete_location_member(location_id, member_id):
 def add_location_item(location_id):
     body = request.get_json()
 
-    item = Item(name=body['name'], price=body['price'])
+    item = Item(name=body['name'], price=body['price'], version=str(uuid4()))
     db.session.add(item)
     db.session.flush()
 
+    item_log = ItemLog(
+        item_version=item.version,
+        item_id=item.id,
+        name=item.name,
+        price=item.price
+    )
+    db.session.add(item_log)
+
     item_stock = ItemStock(
-        item_id=item.id, location_id=location_id, quantity=body['quantity'])
+        item_id=item.id,
+        location_id=location_id,
+        quantity=body['quantity'],
+        version=str(uuid4())
+    )
     db.session.add(item_stock)
+    db.session.flush()
+
+    item_stock_log = ItemStockLog(
+        item_id=item.id,
+        item_version=item.version,
+        item_stock_version=item_stock.version,
+        location_id=item_stock.location_id,
+        quantity=item_stock.quantity
+    )
+    db.session.add(item_stock_log)
+
     db.session.commit()
 
     return jsonify(item.with_stock(item_stock))
@@ -118,23 +143,56 @@ def add_location_item(location_id):
 @locations.route('/<location_id>/items/<item_id>', methods=['PUT'])
 @control.authorize(['location'])
 def update_location_item(location_id, item_id):
+    item_modified = False
+    stock_modfied = False
+
     body = request.get_json()
 
     item = Item.query.get(item_id)
-    item.name = body['name']
-    item.price = body['price']
-    db.session.add(item)
+    if item.name != body['name'] or item.name != body['price']:
+        item_modified = True
+        last_version = item.version
+        item.name = body['name']
+        item.price = body['price']
+        item.version = str(uuid4())
+        db.session.add(item)
+
+        item_log = ItemLog(
+            item_version=item.version,
+            last_item_version=last_version,
+            item_id=item.id,
+            name=item.name,
+            price=item.price
+        )
+        db.session.add(item_log)
 
     item_stock = ItemStock \
         .query \
         .filter(ItemStock.item_id == item_id) \
         .first()
-    item_stock.quantity = body['quantity']
-    db.session.add(item)
+
+    if item_stock.quantity != body['quantity']:
+        stock_modfied = True
+        last_version = item_stock.version
+        item_stock.version = str(uuid4())
+        item_stock.quantity = body['quantity']
+        db.session.add(item_stock)
+
+        item_stock_log = ItemStockLog(
+            item_id=item.id,
+            item_version=item.version,
+            item_stock_version=item_stock.version,
+            last_item_stock_version=last_version,
+            location_id=item_stock.location_id,
+            quantity=body['quantity'])
+        db.session.add(item_stock_log)
 
     db.session.commit()
 
-    return jsonify(item.with_stock(item_stock))
+    if not item_modified and not stock_modfied:
+        return error.bad_request('Did not modify record.')
+    else:
+        return jsonify(item.with_stock(item_stock))
 
 
 @locations.route('/<location_id>/items', methods=['GET'])

@@ -1,18 +1,22 @@
 from .db import db
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, ForeignKey, DateTime, \
-    PrimaryKeyConstraint, Integer, Numeric
+from sqlalchemy import Column, Boolean, ForeignKey, DateTime, \
+    PrimaryKeyConstraint, Integer, Numeric, Text, String
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.sql import func as sqlfunc
 from uuid import uuid4
 
 
-def create_id():
+def uuid():
     return str(uuid4())
 
 
 def Id():
-    return Column(String(36), primary_key=True, default=create_id)
+    return Column(String(36), primary_key=True, default=uuid)
+
+
+def Uuid():
+    return String(36)
 
 
 class TrackUpdates:
@@ -28,7 +32,7 @@ class TrackCreations:
 
 class User(db.Model):
     id = Id()
-    email = Column(String(256), nullable=False, unique=True)
+    email = Column(Text(), nullable=False, unique=True)
     password = Column(BYTEA(60), nullable=False)
     email_confirmed = Column(Boolean(), nullable=False, default=False)
 
@@ -50,7 +54,7 @@ class Location(db.Model, TrackCreations, TrackUpdates):
 
     id = Id()
     owner_id = Column(ForeignKey('user.id'), nullable=False)
-    name = Column(String(256), nullable=False)
+    name = Column(Text(), nullable=False)
 
     def to_dict(self):
         return {
@@ -75,7 +79,8 @@ class LocationMember(db.Model, TrackCreations):
 
 class Item(db.Model, TrackCreations, TrackUpdates):
     id = Id()
-    name = Column(String(256), nullable=False)
+    version = Column(Uuid())
+    name = Column(Text, nullable=False)
     price = Column(Numeric(15, 2))
 
     def to_dict(self):
@@ -97,11 +102,37 @@ class ItemStock(db.Model, TrackCreations, TrackUpdates):
 
     item_id = Column(ForeignKey('item.id'), nullable=False)
     location_id = Column(ForeignKey('location.id'), nullable=False)
-    __tableargs__ = (PrimaryKeyConstraint(item_id, location_id),)
+    version = Column(Uuid())
     # Quantity for now is in milligrams. Will add enum later...
     quantity = Column(Integer, nullable=False)
     # Price of an item stock will be coalesced from the item.
     price = Column(Numeric(15, 2))
+    __tableargs__ = (PrimaryKeyConstraint(item_id, location_id),)
+
+
+class ItemLog(db.Model, TrackCreations):
+    item_version = Column(Uuid(), unique=True)
+    last_item_version = Column(Uuid())
+    item_id = Column(ForeignKey('item.id'), nullable=False)
+
+    name = Column(Text(), nullable=False)
+    price = Column(Numeric(15, 2))
+
+    __table_args__ = (PrimaryKeyConstraint(item_id, item_version),)
+
+
+class ItemStockLog(db.Model, TrackCreations):
+    item_id = Column(ForeignKey('item.id'), nullable=False)
+    item_version = Column(ForeignKey('item_log.item_version'), nullable=False)
+
+    item_stock_version = Column(Uuid())
+    last_item_stock_version = Column(Uuid())
+
+    location_id = Column(ForeignKey('location.id'), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    price = Column(Numeric(15, 2))
+
+    __table_args__ = (PrimaryKeyConstraint(item_id, item_stock_version),)
 
 
 def drop_all():
