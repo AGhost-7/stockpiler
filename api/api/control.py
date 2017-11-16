@@ -57,24 +57,31 @@ def user_grant():
 def location_grant():
     user_id = current_user_id()
     location_id = request.view_args['location_id']
-    location = Location \
-        .query \
-        .outerjoin(
-            LocationMember, LocationMember.location_id == location_id) \
-        .filter(
-            LocationMember.user_id == user_id or Location.owner_id == user_id
-        ) \
-        .first()
+    if 'location' in g:
+        location = g.location
+    else:
+        location = Location.query.get(location_id)
 
-    if location is None:
-        return error.forbidden('Not a member of location')
+    if location.owner_id != user_id:
+
+        location = LocationMember \
+            .query \
+            .filter(LocationMember.user_id == user_id) \
+            .filter(LocationMember.location_id == location_id) \
+            .first()
+
+        if location is None:
+            return error.forbidden('Not a member of location')
 
 
 @control.grant('owner')
 def owner_grant():
     user_id = current_user_id()
-    location_id = request.view_args['location_id']
-    location = Location.query.get(location_id)
+    if 'location' in g:
+        location = g.location
+    else:
+        location_id = request.view_args['location_id']
+        location = Location.query.get(location_id)
 
     if location is None:
         return error.bad_request('Location does not exist')

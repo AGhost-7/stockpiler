@@ -2,11 +2,21 @@ from api.db import db
 from api.models import User, Location, LocationMember, Item, ItemStock
 from api.auth import current_user_id
 from api.error import error
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from api.validation import list_parser
 from api.control import control
 
 locations = Blueprint('locations', __name__, url_prefix='/v1/locations')
+
+
+@locations.before_request
+def prefetch_location():
+    if 'location_id' in request.view_args:
+        location_id = request.view_args['location_id']
+        location = Location.query.get(location_id)
+        if location_id is None:
+            return error.not_found('Could not find location')
+        g.location = location
 
 
 @locations.route('', methods=['POST'])
@@ -50,14 +60,10 @@ def list_locations():
 @locations.route('/<location_id>/members/<member_id>', methods=['POST'])
 @control.authorize(['owner'])
 def add_location_member(location_id, member_id):
-    location = Location.query.get(location_id)
-    if location is None:
-        return error.not_found('Invalid location')
-    else:
-        member = LocationMember(user_id=member_id, location_id=location_id)
-        db.session.add(member)
-        db.session.commit()
-        return jsonify(member.to_dict())
+    member = LocationMember(user_id=member_id, location_id=location_id)
+    db.session.add(member)
+    db.session.commit()
+    return jsonify(member.to_dict())
 
 
 @locations.route('/<location_id>/members')
