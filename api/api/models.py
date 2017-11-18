@@ -73,7 +73,6 @@ class PasswordReset(db.Model, TrackCreations):
         return PasswordReset.query.filter(PasswordReset.token == token).first()
 
 
-
 class Location(db.Model, TrackCreations, TrackUpdates):
 
     id = Id()
