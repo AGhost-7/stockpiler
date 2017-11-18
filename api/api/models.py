@@ -1,3 +1,4 @@
+from api.config import config
 from .db import db
 from datetime import datetime
 from sqlalchemy import Column, Boolean, ForeignKey, DateTime, \
@@ -43,11 +44,34 @@ class User(db.Model):
             'email_confirmed': self.email_confirmed
         }
 
+    def by_email(email):
+        return User.query.filter(User.email == email).first()
 
-class EmailConfirmation(db.Model):
 
+class EmailConfirmation(db.Model, TrackCreations):
     id = Id()
     user_id = Column(ForeignKey('user.id'), nullable=False)
+
+
+class PasswordReset(db.Model, TrackCreations):
+    user_id = Column(ForeignKey('user.id'), nullable=False)
+    token = Column(Text(), default=uuid, nullable=False)
+    __table_args__ = (PrimaryKeyConstraint(user_id),)
+
+    def is_expired(self):
+        ttl = config['PASSWORD_RESET_TTL_SECONDS']
+        seconds_elapsed = (datetime.now() - self.created_at).total_seconds()
+        return seconds_elapsed > ttl
+
+    def to_dict(self):
+        return {
+            'token': self.token,
+            'user_id': self.user_id
+        }
+
+    def by_token(token):
+        return PasswordReset.query.filter(PasswordReset.token == token).first()
+
 
 
 class Location(db.Model, TrackCreations, TrackUpdates):

@@ -16,8 +16,8 @@ class HTTPErrors:
 def create_property(prop):
     status = getattr(HTTPStatus, prop)
 
-    def http_error(self, message):
-        body = {'message': gettext(message)}
+    def http_error(self, message, **kwargs):
+        body = {'message': gettext(message, **kwargs)}
         return jsonify(body), status.value
 
     lower = status.name.lower()
