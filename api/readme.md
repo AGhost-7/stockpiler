@@ -32,6 +32,8 @@ Request body:
 }
 ```
 
+Sends an email where the url will be `BASE_URL + '/email-confirmation/' + TOKEN`.
+
 #### Email confirmation
 
 ```
@@ -49,6 +51,55 @@ Request body:
 {
 	"email": "aghost-7@example.com",
 	"password": "testing123"
+}
+```
+
+#### Password Reset
+
+##### Initialize
+```
+POST /v1/users/password-reset
+```
+
+Request body:
+```
+{
+	"email": "the-users-email@gmail.com"
+}
+```
+
+Sends an email where the url will be `BASE_URL + '/password-reset/' + TOKEN`.
+
+##### Fetch
+```
+GET /v1/users/password-reset/:token
+```
+
+Response body:
+```
+{
+	"token": "some uuid",
+	"user_id": "some other uuid",
+	"user": {
+		"id": "some id",
+		"email": "foo@bar.com",
+		"email_confirmed": true
+	}
+}
+```
+
+Will return an error if the token has expired or does not exit.
+
+##### Submit
+
+```
+POST /v1/users/password-reset/:token
+```
+
+Request body:
+```
+{
+	"password": "mypassword"
 }
 ```
 
