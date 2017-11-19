@@ -4,7 +4,7 @@ from api.models import User, Location, LocationMember, Item, ItemStock, \
 from api.auth import current_user_id
 from api.error import error
 from flask import Blueprint, request, jsonify, g
-from api.validation import list_parser
+from api.validation import list_parser, simple_parser
 from api.control import control
 from uuid import uuid4
 
@@ -24,15 +24,19 @@ def prefetch_location():
 @locations.route('', methods=['POST'])
 @control.authorize(['user'])
 def create_location():
-    body = request.get_json()
-    owner_id = body['owner_id']
+    args = simple_parser() \
+        .add_argument('owner_id', required=True) \
+        .add_argument('name', required=True) \
+        .parse_args()
+
+    owner_id = args['owner_id']
 
     user = User.query.get(owner_id)
 
     if user is None:
         return error.not_found('User not found')
 
-    location = Location(owner_id=user.id, name=body['name'])
+    location = Location(owner_id=user.id, name=args['name'])
 
     db.session.add(location)
     db.session.commit()
@@ -43,8 +47,7 @@ def create_location():
 @locations.route('', methods=['GET'])
 @control.authorize(['user'])
 def list_locations():
-    parser = list_parser()
-    args = parser.parse_args()
+    args = list_parser().parse_args()
     user_id = current_user_id()
     locations = Location \
         .query \
@@ -71,8 +74,7 @@ def add_location_member(location_id, member_id):
 @locations.route('/<location_id>/members')
 @control.authorize(['location'])
 def list_location_members(location_id):
-    parser = list_parser()
-    args = parser.parse_args()
+    args = list_parser().parse_args()
     members = User \
         .query \
         .join(LocationMember, LocationMember.user_id == User.id) \
@@ -103,9 +105,13 @@ def delete_location_member(location_id, member_id):
 @locations.route('/<location_id>/items', methods=['POST'])
 @control.authorize(['location'])
 def add_location_item(location_id):
-    body = request.get_json()
+    args = simple_parser() \
+        .add_argument('name', required=True) \
+        .add_argument('price', type=float, required=True) \
+        .add_argument('quantity', type=int, required=True) \
+        .parse_args()
 
-    item = Item(name=body['name'], price=body['price'], version=str(uuid4()))
+    item = Item(name=args['name'], price=args['price'], version=str(uuid4()))
     db.session.add(item)
     db.session.flush()
 
@@ -120,7 +126,7 @@ def add_location_item(location_id):
     item_stock = ItemStock(
         item_id=item.id,
         location_id=location_id,
-        quantity=body['quantity'],
+        quantity=args['quantity'],
         version=str(uuid4())
     )
     db.session.add(item_stock)
@@ -146,14 +152,18 @@ def update_location_item(location_id, item_id):
     item_modified = False
     stock_modfied = False
 
-    body = request.get_json()
+    args = simple_parser() \
+        .add_argument('name', required=True) \
+        .add_argument('price', type=float, required=True) \
+        .add_argument('quantity', type=int, required=True) \
+        .parse_args()
 
     item = Item.query.get(item_id)
-    if item.name != body['name'] or item.name != body['price']:
+    if item.name != args['name'] or item.name != args['price']:
         item_modified = True
         last_version = item.version
-        item.name = body['name']
-        item.price = body['price']
+        item.name = args['name']
+        item.price = args['price']
         item.version = str(uuid4())
         db.session.add(item)
 
@@ -171,11 +181,11 @@ def update_location_item(location_id, item_id):
         .filter(ItemStock.item_id == item_id) \
         .first()
 
-    if item_stock.quantity != body['quantity']:
+    if item_stock.quantity != args['quantity']:
         stock_modfied = True
         last_version = item_stock.version
         item_stock.version = str(uuid4())
-        item_stock.quantity = body['quantity']
+        item_stock.quantity = args['quantity']
         db.session.add(item_stock)
 
         item_stock_log = ItemStockLog(
@@ -184,7 +194,7 @@ def update_location_item(location_id, item_id):
             item_stock_version=item_stock.version,
             last_item_stock_version=last_version,
             location_id=item_stock.location_id,
-            quantity=body['quantity'])
+            quantity=args['quantity'])
         db.session.add(item_stock_log)
 
     db.session.commit()
