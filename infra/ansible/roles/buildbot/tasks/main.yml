@@ -141,6 +141,7 @@
       - "{{buildbot_config_dir}}/keys:/root/.ssh"
       - "/run/docker.sock:/var/run/docker.sock"
     env:
+      DOCKER_REGISTRY_NAME: "{{docker_registry_name}}"
       WORKERNAME: "worker{{groups.buildbot_worker.index(inventory_hostname)}}"
       WORKERPASS: "{{buildbot_worker_pass}}"
       BUILDMASTER: "{{groups['buildbot_master'][0]}}"

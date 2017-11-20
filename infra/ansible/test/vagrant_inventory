@@ -1,28 +1,40 @@
-
+[build]
+192.168.50.3
 [orchestration]
 192.168.50.2
-
-[registry]
-192.168.50.3
-
-[buildbot_master]
-192.168.50.3
-[buildbot_master_db]
-192.168.50.3
-[buildbot_worker]
-192.168.50.3
+[worker1]
 192.168.50.4
+[worker2]
 192.168.50.5
+[front]
+192.168.50.6
+[api1]
+192.168.50.7
+[ui1]
+192.168.50.8
+
+[registry:children]
+build
+
+[buildbot_master:children]
+build
+[buildbot_master_db:children]
+build
+[buildbot_worker:children]
+build
+worker1
+worker2
 
 [buildbot:children]
 buildbot_master
 buildbot_worker
 
-[front]
-192.168.50.6
+[ui:children]
+front
+ui1
 
-[api]
-192.168.50.6
+[api:children]
+front
 
-[certbot]
-192.168.50.6
+[certbot:children]
+front

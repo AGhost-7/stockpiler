@@ -1,17 +1,27 @@
 
-# Just a dummy file for now. Using to test haproxy config, etc.
+# Just a dummy server for now. Using to test haproxy config, etc.
 
-- name: create index.html
-  copy:
-    src: files/index.html
-    dest: "{{ansible_env.HOME}}/index.html"
+- name: firewall for ui is opened
+  with_items: "{{groups['front']}}"
+  ufw:
+    allow: yes
+    from_ip: "{{item}}"
+    port: 8000
+  notify:
+    - reload firewall
 
-- name: ensure server is not already up
-  shell: "pkill -9 python3 || true"
+- name: pull image
+  register: ui_image
+  docker_image:
+    name: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
 
-- name: bring up server
-  shell: |
-    (
-      cd "{{ansible_env.HOME}}" ;
-      nohup python3 -m http.server 8000 &
-    )
+- name: bring up ui server
+  when: ui_image.changed
+  docker_container:
+    recreate: yes
+    network_mode: host
+    name: "ui{{groups.ui.index(inventory_hostname)}}"
+    image: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
+    log_driver: "{{docker_log_driver}}"
+    state: started
+    restart_policy: "{{docker_default_restart_policy}}"
