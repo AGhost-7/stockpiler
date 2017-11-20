@@ -222,10 +222,17 @@ DELETE /v1/locations/:locationId/devices/:deviceId
 
 ## Developing
 
+
+To spin up services that the api is dependent on, run the following:
+```
+docker-compose up
+```
+
+Then, in a separate terminal, run the following:
 ```
 virtualenv env
 pip install -r requirements.txt
 pip install --editable .
-docker-compose up
+api_create_tables
 api
 ```
