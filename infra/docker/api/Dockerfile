@@ -14,8 +14,9 @@ RUN mkdir -p ~/.ssh && \
 
 RUN . /env/bin/activate && \
 	git clone git@github.com:AGhost-7/stockpiler && \
+	cd /stockpiler && \
 	git reset --hard "$GIT_REV" && \
-	cd /stockpiler/api && \
+	cd api && \
 	pip install -r requirements.txt && \
 	pip install .
 
