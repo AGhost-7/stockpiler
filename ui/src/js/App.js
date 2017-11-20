@@ -6,18 +6,24 @@ import Home from './pages/Home'
 import GetStarted from './pages/GetStarted'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import { connect } from 'react-redux'
+import { fetchUser } from './actions/user-actions'
 
-
+connect((store) => {
+	return {
+		user: store.user.user
+	}
+})
 
 class App extends Component {
-	constructor() {
-		super()
 
-		this.state = {
-			user: null,
-		}
+	static propTypes = {
+		dispatch: () => {}
 	}
 
+	componentWillMount() {
+		this.props.dispatch(fetchUser())
+	}
 
 	render() {
 		return (
@@ -35,4 +41,4 @@ class App extends Component {
 	}
 }
 
-export default App
+export default connect()(App)
