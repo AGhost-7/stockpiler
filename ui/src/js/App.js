@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Route } from 'react-router-dom'
-import Header from './components/Header'
-import SPFooter from './components/SPFooter'
-import Home from './components/Home'
-import GetStarted from './components/GetStarted'
-import Login from './components/Login'
-import SignUp from './components/SignUp'
+import Header from './pages/Header'
+import SPFooter from './pages/SPFooter'
+import Home from './pages/Home'
+import GetStarted from './pages/GetStarted'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 
 
 
