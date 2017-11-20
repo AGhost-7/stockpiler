@@ -231,6 +231,7 @@ docker-compose up
 Then, in a separate terminal, run the following:
 ```
 virtualenv env
+. env/bin/activate
 pip install -r requirements.txt
 pip install --editable .
 api_create_tables
