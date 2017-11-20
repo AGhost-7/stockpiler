@@ -13,8 +13,10 @@ RUN mkdir -p ~/.ssh && \
 	ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 RUN . /env/bin/activate && \
-	git clone --depth=3 --branch "$GIT_REV" git@github.com:AGhost-7/stockpiler && \
+	git clone git@github.com:AGhost-7/stockpiler && \
+	git reset --hard "$GIT_REV" && \
 	cd /stockpiler/api && \
+	pip install -r requirements.txt && \
 	pip install .
 
 FROM python:3.5.2
