@@ -1,0 +1,1 @@
+docker_image_tag_api: "{{docker_image_tag}}"

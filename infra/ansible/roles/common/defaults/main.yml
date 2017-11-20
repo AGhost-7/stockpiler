@@ -6,4 +6,4 @@ docker_registry_port: 5000
 docker_registry_name: "{{groups['registry'][0]}}:{{docker_registry_port}}"
 docker_registry_key_file: test/registry.key
 docker_registry_cert_file: test/registry.crt
-
+docker_image_tag: latest
