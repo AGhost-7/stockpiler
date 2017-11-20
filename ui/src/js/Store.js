@@ -1,5 +1,5 @@
 /**
- * Out store, see readme's in either reducers or middelware
+ * Our store, see readme's in either reducers or middelware
  * for more information
  */
 import { createStore } from 'redux'
