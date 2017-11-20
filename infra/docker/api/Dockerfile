@@ -23,6 +23,12 @@ COPY --from=0 /env /env
 
 COPY ./entrypoint.sh /entrypoint.sh
 
+ENV MAIL_SERVER=smtp.mailgun.org
+
+ENV MAIL_PORT=465
+
+ENV MAIL_USE_TLS=true
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["api"]
