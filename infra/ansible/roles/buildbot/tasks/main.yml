@@ -61,7 +61,9 @@
 
 - name: generate known_hosts
   become: yes
-  shell: ssh-keyscan github.com > /etc/buildbot/keys/known_hosts
+  shell: |
+    ssh-keygen -f /etc/buildbot/keys/known_hosts -R github.com
+    ssh-keyscan github.com > /etc/buildbot/keys/known_hosts
 
 - name: build master image
   delegate_to: localhost
