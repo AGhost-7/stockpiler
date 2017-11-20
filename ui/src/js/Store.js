@@ -1,6 +1,6 @@
 /**
- * Add middleware here, store custom middleware in
- * `./custom/`
+ * Out store, see readme's in either reducers or middelware
+ * for more information
  */
 import { createStore } from 'redux'
 import reducer from './reducers'
