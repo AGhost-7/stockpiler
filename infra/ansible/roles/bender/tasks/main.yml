@@ -1,0 +1,33 @@
+
+- name: open up the firewall for build master
+  with_items: "{{groups['buildbot_master']}}"
+  become: yes
+  ufw:
+    rule: allow
+    from_ip: "{{item}}"
+    port: 1111
+
+- name: build bender image
+  delegate_to: localhost
+  run_once: true
+  become: yes
+  register: bender_image
+  docker_image:
+    push: yes
+    force: yes
+    path: ../docker/bender
+    name: "{{docker_registry_name}}/bender"
+
+- name: run the container
+  docker_container:
+    name: bender
+    image: "{{bender_image.image['RepoDigests'][0]}}"
+    network_mode: host
+    recreate: yes
+    restart_policy: "{{docker_default_restart_policy}}"
+    state: started
+    log_driver: "{{docker_log_driver}}"
+    env:
+      BUILDBOT_AUTH_USER: "{{bender_buildbot_auth_user}}"
+      BUILDBOT_AUTH_PASS: "{{bender_buildbot_auth_pass}}"
+      DISCORD_TOKEN: "{{bender_discord_token}}"
