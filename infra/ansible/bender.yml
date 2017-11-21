@@ -1,0 +1,7 @@
+
+# spin up bender, our chat bot
+
+- hosts: bender
+  roles:
+    - common
+    - bender

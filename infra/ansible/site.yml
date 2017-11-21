@@ -13,6 +13,12 @@
     - common
     - buildbot
 
+- name: bender
+  hosts: bender
+  roles:
+    - common
+    - bender
+
 - name: haproxy
   hosts: front
   roles:

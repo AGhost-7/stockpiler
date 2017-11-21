@@ -1,4 +1,4 @@
-aiohttp==1.0.5
+aiohttp==2.3.3
 asn1crypto==0.23.0
 async-timeout==2.0.0
 asyncssh==1.11.1
@@ -11,3 +11,4 @@ multidict==3.3.2
 pycparser==2.18
 six==1.11.0
 websockets==3.4
+yarl==0.14.2

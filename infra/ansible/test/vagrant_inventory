@@ -24,10 +24,12 @@ build
 build
 worker1
 worker2
-
 [buildbot:children]
 buildbot_master
 buildbot_worker
+
+[bender:children]
+build
 
 [ui:children]
 front
