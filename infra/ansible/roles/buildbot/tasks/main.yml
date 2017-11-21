@@ -127,6 +127,7 @@
       BUILDBOT_OAUTH_ID: "{{buildbot_oauth_id}}"
       BUILDBOT_OAUTH_SECRET: "{{buildbot_oauth_secret}}"
       BUILDBOT_GITHUB_WEBHOOK_SECRET: "{{buildbot_github_webhook_secret}}"
+      BUILDBOT_STAGE_BRANCH: "{{buildbot_stage_branch}}"
 
 - name: worker containers
   when: inventory_hostname in groups['buildbot_worker']

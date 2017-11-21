@@ -3,7 +3,7 @@
 # rolling deployment once we get past the MVP stage.
 
 - name: ui server
-  hosts: front
+  hosts: ui
   serial: 1
   roles:
     - common

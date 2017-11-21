@@ -2,21 +2,20 @@
 # Just a dummy server for now. Using to test haproxy config, etc.
 
 - name: firewall for ui is opened
+  become: yes
   with_items: "{{groups['front']}}"
   ufw:
-    allow: yes
+    rule: allow
     from_ip: "{{item}}"
     port: 8000
   notify:
     - reload firewall
 
 - name: pull image
-  register: ui_image
   docker_image:
     name: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
 
 - name: bring up ui server
-  when: ui_image.changed
   docker_container:
     recreate: yes
     network_mode: host

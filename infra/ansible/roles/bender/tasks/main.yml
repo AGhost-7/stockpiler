@@ -6,6 +6,8 @@
     rule: allow
     from_ip: "{{item}}"
     port: 1111
+  notify:
+    - reload firewall
 
 - name: build bender image
   delegate_to: localhost
