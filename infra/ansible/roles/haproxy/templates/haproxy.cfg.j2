@@ -38,7 +38,9 @@ backend api
 	{% endfor %}
 
 backend ui
-	server server1 127.0.0.1:8000
+	{% for host in groups['ui'] %}
+	server server{{loop.index}} {{host}}:8000
+	{% endfor %}
 
 backend certbot
 	{% for host in groups['certbot'] %}

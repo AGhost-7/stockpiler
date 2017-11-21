@@ -9,3 +9,4 @@ buildbot_config_dir: /etc/buildbot
 buildbot_url: https://buildbot.stockpiler-dev.com/
 buildbot_aghost_cred: changemeh
 buildbot_shardy_cred: changemeh
+buildbot_stage_branch: devel
