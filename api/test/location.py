@@ -51,7 +51,6 @@ def test_list_owner_locations_limit():
 def test_add_location_member():
     response = owner.requests.post(
         '/v1/locations/' + location_id + '/members/' + employee.id)
-    print(response.text)
     assert response.status_code == 200
 
 
