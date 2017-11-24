@@ -41,7 +41,7 @@ config = {
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
 
     'JWT_SECRET': environ.get('JWT_SECRET', urandom(20).hex()),
-    'BASE_URL': environ.get('BASE_URL', 'localhost'),
+    'BASE_URL': environ.get('BASE_URL', 'localhost:3000'),
     'PASSWORD_RESET_TTL_SECONDS': 60 * 60,
     'DEBUG': get_bool('DEBUG', True)
 }
