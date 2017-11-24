@@ -13,6 +13,7 @@
 
 - name: pull image
   docker_image:
+    force: yes
     name: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
 
 - name: bring up ui server

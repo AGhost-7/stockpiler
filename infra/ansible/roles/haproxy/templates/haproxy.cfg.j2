@@ -4,6 +4,9 @@ global
 defaults
 	mode http
 	maxconn 1000
+	timeout client 10s
+	timeout connect 4s
+	timeout server 20s
 
 frontend front-http
 	bind *:80
@@ -33,13 +36,13 @@ backend buildbot
 
 backend api
 	{% for host in groups['api'] %}
-	server server{{loop.index}}-0 {{host}}:3000
-	server server{{loop.index}}-1 {{host}}:3001
+	server server{{loop.index}} {{host}}:5000 check
 	{% endfor %}
 
 backend ui
+	option http-keep-alive
 	{% for host in groups['ui'] %}
-	server server{{loop.index}} {{host}}:8000
+	server server{{loop.index}} {{host}}:8000 check
 	{% endfor %}
 
 backend certbot

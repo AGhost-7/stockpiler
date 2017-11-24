@@ -1,0 +1,5 @@
+- name: haproxy server
+  hosts: front
+  roles:
+    - common
+    - haproxy

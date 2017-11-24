@@ -1,1 +1,32 @@
+- name: ensure firewall is open
+  become: yes
+  with_items: "{{groups['front']}}"
+  ufw:
+    rule: allow
+    from_ip: "{{item}}"
+    port: 5000
 
+- name: api image name
+  set_fact:
+    docker_image_api: "{{docker_registry_name}}/api:{{docker_image_tag_api}}"
+
+- name: pull image
+  docker_image:
+    force: yes
+    name: "{{docker_image_api}}"
+
+- name: create tables
+  run_once: yes
+  shell: |
+    docker run --rm --entrypoint /entrypoint.sh "{{docker_image_api}}" api_create_tables
+
+- name: create api container
+  docker_container:
+    image: "{{docker_image_api}}"
+    recreate: yes
+    network_mode: host
+    name: "api{{groups.api.index(inventory_hostname)}}"
+    log_driver: "{{docker_log_driver}}"
+    state: started
+    restart_policy: "{{docker_defaulf_restart_policy}}"
+    env: "{{env.api}}"

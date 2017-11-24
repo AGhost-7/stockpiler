@@ -1,0 +1,17 @@
+- name: open up firewall
+  become: yes
+  with_items: "{{groups['api']}}"
+  ufw:
+    rule: allow
+    from_ip: "{{item}}"
+    port: 5432
+
+- name: create db container
+  docker_container:
+    name: db
+    image: postgres:10
+    state: started
+    network_mode: host
+    log_driver: "{{docker_log_driver}}"
+    restart_policy: "{{docker_default_restart_policy}}"
+    env: "{{env.db}}"
