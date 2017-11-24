@@ -21,14 +21,21 @@ Just...
 vagrant up
 ```
 
-### Configure Github Integrations
+### Configure Ansible
 You will need to specify the following variables in `ansible/group_vars/all`
 for the buildbot server to work correctly:
 ```yaml
+# location of your ssh key. defaults to "~/.ssh-host/id_rsa"
+git_private_key: ''
+# API token used for calling the 
 buildbot_github_api_token: ''
+# Used for the github login capability
 buildbot_oauth_id: ''
 buildbot_oauth_secret: ''
+# secret used to authenticate and verify github payloads
 buildbot_github_webhook_secret: ''
+# Bot token used for logging in as bender
+bender_discord_token: ''
 ```
 
 ### Bring up the system
