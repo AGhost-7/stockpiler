@@ -50,6 +50,9 @@ sudo apt-get install -y --no-install-recommends vim
 # terminal multiplexing
 sudo apt-get install -y --no-install-recommends tmux
 
+# email client
+sudo apt-get install -y --no-install-recommends swaks
+
 # }}}
 
 # {{{ install docker

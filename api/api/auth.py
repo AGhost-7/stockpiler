@@ -3,12 +3,10 @@
 
 from datetime import datetime
 from .app import app
-from functools import wraps
 import jwt
 from jwt.exceptions import DecodeError, InvalidTokenError
 from flask import request, g
 from .error import error
-
 
 secret = app.config['JWT_SECRET']
 
@@ -40,33 +38,6 @@ def parse_token():
         return error.unauthorized('Please login')
 
     return None
-
-
-def is_forbidden(required_roles, roles):
-    for required in required_roles:
-        if required in roles:
-            return False
-
-    return True
-
-
-def authenticated(roles):
-
-    def decorator(function):
-
-        @wraps(function)
-        def wrap(*args, **kwargs):
-            error = parse_token()
-            if error is None:
-                if is_forbidden(roles, g.jwt['roles']):
-                    return error.forbidden('Access is denied')
-                else:
-                    return function(*args, **kwargs)
-            else:
-                return error
-
-        return wrap
-    return decorator
 
 
 def current_user():
