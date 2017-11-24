@@ -1,12 +1,12 @@
 version: '3'
 services:
   db:
-    image: mariadb:10.3
+    image: aghost7/pg-dev:10
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test
     ports:
-      - 3306:3306
+      - 5432:5432
   mail:
     image: mailhog/mailhog
     ports:

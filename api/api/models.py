@@ -1,17 +1,23 @@
+from api.config import config
 from .db import db
 from datetime import datetime
-from sqlalchemy import Column, String, Boolean, BLOB, ForeignKey, DateTime, \
-    PrimaryKeyConstraint, Integer, Numeric
+from sqlalchemy import Column, Boolean, ForeignKey, DateTime, \
+    PrimaryKeyConstraint, Integer, Numeric, Text, String
+from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.sql import func as sqlfunc
 from uuid import uuid4
 
 
-def create_id():
+def uuid():
     return str(uuid4())
 
 
 def Id():
-    return Column(String(36), primary_key=True, default=create_id)
+    return Column(String(36), primary_key=True, default=uuid)
+
+
+def Uuid():
+    return String(36)
 
 
 class TrackUpdates:
@@ -26,10 +32,9 @@ class TrackCreations:
 
 
 class User(db.Model):
-    __tablename__ = 'user'
     id = Id()
-    email = Column(String(256), nullable=False, unique=True)
-    password = Column(BLOB(60), nullable=False)
+    email = Column(Text(), nullable=False, unique=True)
+    password = Column(BYTEA(60), nullable=False)
     email_confirmed = Column(Boolean(), nullable=False, default=False)
 
     def to_dict(self):
@@ -39,19 +44,40 @@ class User(db.Model):
             'email_confirmed': self.email_confirmed
         }
 
+    def by_email(email):
+        return User.query.filter(User.email == email).first()
 
-class EmailConfirmation(db.Model):
-    __tablename__ = 'email_confirmation'
+
+class EmailConfirmation(db.Model, TrackCreations):
     id = Id()
     user_id = Column(ForeignKey('user.id'), nullable=False)
 
 
+class PasswordReset(db.Model, TrackCreations):
+    user_id = Column(ForeignKey('user.id'), nullable=False)
+    token = Column(Text(), default=uuid, nullable=False)
+    __table_args__ = (PrimaryKeyConstraint(user_id),)
+
+    def is_expired(self):
+        ttl = config['PASSWORD_RESET_TTL_SECONDS']
+        seconds_elapsed = (datetime.now() - self.created_at).total_seconds()
+        return seconds_elapsed > ttl
+
+    def to_dict(self):
+        return {
+            'token': self.token,
+            'user_id': self.user_id
+        }
+
+    def by_token(token):
+        return PasswordReset.query.filter(PasswordReset.token == token).first()
+
+
 class Location(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'location'
 
     id = Id()
     owner_id = Column(ForeignKey('user.id'), nullable=False)
-    name = Column(String(256), nullable=False)
+    name = Column(Text(), nullable=False)
 
     def to_dict(self):
         return {
@@ -62,7 +88,6 @@ class Location(db.Model, TrackCreations, TrackUpdates):
 
 
 class LocationMember(db.Model, TrackCreations):
-    __tablename__ = 'location_access'
 
     location_id = Column(ForeignKey('location.id'), nullable=False)
     user_id = Column(ForeignKey('user.id'), nullable=False)
@@ -76,9 +101,9 @@ class LocationMember(db.Model, TrackCreations):
 
 
 class Item(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'item'
     id = Id()
-    name = Column(String(256), nullable=False)
+    version = Column(Uuid())
+    name = Column(Text, nullable=False)
     price = Column(Numeric(15, 2))
 
     def to_dict(self):
@@ -97,15 +122,40 @@ class Item(db.Model, TrackCreations, TrackUpdates):
 
 # Split into two tables to avoid having migration pains when I add orgs.
 class ItemStock(db.Model, TrackCreations, TrackUpdates):
-    __tablename__ = 'item_stock'
 
     item_id = Column(ForeignKey('item.id'), nullable=False)
     location_id = Column(ForeignKey('location.id'), nullable=False)
-    __tableargs__ = (PrimaryKeyConstraint(item_id, location_id),)
+    version = Column(Uuid())
     # Quantity for now is in milligrams. Will add enum later...
     quantity = Column(Integer, nullable=False)
     # Price of an item stock will be coalesced from the item.
     price = Column(Numeric(15, 2))
+    __tableargs__ = (PrimaryKeyConstraint(item_id, location_id),)
+
+
+class ItemLog(db.Model, TrackCreations):
+    item_version = Column(Uuid(), unique=True)
+    last_item_version = Column(Uuid())
+    item_id = Column(ForeignKey('item.id'), nullable=False)
+
+    name = Column(Text(), nullable=False)
+    price = Column(Numeric(15, 2))
+
+    __table_args__ = (PrimaryKeyConstraint(item_id, item_version),)
+
+
+class ItemStockLog(db.Model, TrackCreations):
+    item_id = Column(ForeignKey('item.id'), nullable=False)
+    item_version = Column(ForeignKey('item_log.item_version'), nullable=False)
+
+    item_stock_version = Column(Uuid())
+    last_item_stock_version = Column(Uuid())
+
+    location_id = Column(ForeignKey('location.id'), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    price = Column(Numeric(15, 2))
+
+    __table_args__ = (PrimaryKeyConstraint(item_id, item_stock_version),)
 
 
 def drop_all():

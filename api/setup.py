@@ -8,5 +8,5 @@ setup(
     ],
     extras_require={
     },
-    scripts=['bin/api', 'bin/api_create_tables']
+    scripts=['bin/api', 'bin/api_create_tables', 'bin/api_test_mail']
 )

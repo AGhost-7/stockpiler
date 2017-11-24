@@ -17,7 +17,7 @@ COPY ./test.sh /test/test.sh
 
 RUN pip install --editable .
 
-ENV SQLALCHEMY_DATABASE_URI mysql+pymysql://root:root@db:3306/test
+ENV SQLALCHEMY_DATABASE_URI postgresql+psycopg2://postgres:test@db:5432/test
 
 ENV MAIL_SERVER mail
 
