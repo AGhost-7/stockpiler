@@ -10,4 +10,4 @@ docker_image_tag: latest
 
 db_password: changeme
 db_user: postgres
-db_name: stockpiler
+db_name: api

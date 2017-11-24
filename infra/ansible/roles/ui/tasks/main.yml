@@ -14,14 +14,14 @@
 - name: pull image
   docker_image:
     force: yes
-    name: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
+    name: "{{docker_registry_name}}/ui:{{ui_docker_image_tag}}"
 
 - name: bring up ui server
   docker_container:
     recreate: yes
     network_mode: host
     name: "ui{{groups.ui.index(inventory_hostname)}}"
-    image: "{{docker_registry_name}}/ui:{{docker_image_tag_ui}}"
+    image: "{{docker_registry_name}}/ui:{{ui_docker_image_tag}}"
     log_driver: "{{docker_log_driver}}"
     state: started
     restart_policy: "{{docker_default_restart_policy}}"

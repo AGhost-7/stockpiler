@@ -8,7 +8,7 @@
 
 - name: api image name
   set_fact:
-    docker_image_api: "{{docker_registry_name}}/api:{{docker_image_tag_api}}"
+    docker_image_api: "{{docker_registry_name}}/api:{{api_docker_image_tag}}"
 
 - name: pull image
   docker_image:
@@ -18,7 +18,10 @@
 - name: create tables
   run_once: yes
   shell: |
-    docker run --rm --entrypoint /entrypoint.sh "{{docker_image_api}}" api_create_tables
+    docker run --rm \
+      -e SQLALCHEMY_DATABASE_URI="{{api_database_url}}" \
+      --entrypoint /entrypoint.sh \
+      "{{docker_image_api}}" api_create_tables
 
 - name: create api container
   docker_container:
@@ -28,5 +31,8 @@
     name: "api{{groups.api.index(inventory_hostname)}}"
     log_driver: "{{docker_log_driver}}"
     state: started
-    restart_policy: "{{docker_defaulf_restart_policy}}"
-    env: "{{env.api}}"
+    restart_policy: "{{docker_default_restart_policy}}"
+    env:
+      JWT_SECRET: "{{api_jwt_secret}}"
+      BASE_URL: "{{api_base_url}}"
+      SQLALCHEMY_DATABASE_URI: "{{api_database_url}}"

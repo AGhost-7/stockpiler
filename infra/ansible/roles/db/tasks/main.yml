@@ -14,4 +14,9 @@
     network_mode: host
     log_driver: "{{docker_log_driver}}"
     restart_policy: "{{docker_default_restart_policy}}"
-    env: "{{env.db}}"
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    env:
+      POSTGRES_PASSWORD: "{{db_password}}"
+      POSTGRES_DB: "{{db_name}}"
+      POSTGRES_USER: "{{db_user}}"

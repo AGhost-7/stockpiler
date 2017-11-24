@@ -1,1 +1,1 @@
-docker_image_tag_ui: "{{docker_image_tag}}"
+ui_docker_image_tag: "{{docker_image_tag}}"
