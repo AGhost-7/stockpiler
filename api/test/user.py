@@ -35,11 +35,20 @@ def test_user_registration():
     response = requests.post(base_url + '/v1/users/register', json=state)
     assert response.status_code == 200
     assert response.json()['email'] == state['email']
+    assert response.headers['content-type'] == 'application/json'
     with create_session() as session:
         user = session.query(User).filter(User.email == state['email']).first()
         assert user is not None
         assert user.email_confirmed is not True
         assert user.password != state['password']
+
+
+def test_failed_user_registration():
+    response = requests.post(
+        base_url + '/v1/users/register', json={})
+    assert response.status_code >= 400
+    assert response.headers['content-type'] == 'application/json'
+    assert 'message' in response.json()
 
 
 def test_user_registration_email():
