@@ -55,7 +55,7 @@
 - name: copy git key
   become: yes
   copy:
-    src: "{{buildbot_git_private_key}}"
+    src: "{{git_private_key}}"
     dest: "{{buildbot_config_dir}}/keys/id_rsa"
     mode: 0600
 

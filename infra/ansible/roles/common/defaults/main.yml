@@ -1,4 +1,6 @@
 
+git_private_key: ~/.ssh-host/id_rsa
+
 docker_log_driver: journald
 docker_default_restart_policy: always
 

@@ -25,8 +25,39 @@
     - common
     - haproxy
 
+- name: prebuild images
+  hosts: all
+  roles:
+    - common
+  tasks:
+    - name: building deployable images
+      delegate_to: localhost
+      run_once: yes
+      with_items:
+        - ui
+        - api
+      docker_image:
+        path: "../docker/{{item}}"
+        push: yes
+        buildargs:
+          GIT_REV: "devel"
+          SSH_KEY: "{{lookup('file', git_private_key)}}"
+        name: "{{docker_registry_name}}/{{item}}:latest"
+
 - name: ui server
   hosts: front
   roles:
     - common
     - ui
+
+- name: db server
+  hosts: db
+  roles:
+    - common
+    - db
+
+- name: api server
+  hosts: api
+  roles:
+    - common
+    - api
