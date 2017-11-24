@@ -45,9 +45,9 @@ vagrant ssh
 cd /vagrant/ansible
 ```
 
-Ping your servers to check that everything is in place:
+Set up the known hosts file
 ```
-ansible -m ping -i test/vagrant_inventory all
+ansible-playbook -i test/vagrant_inventory known-hosts.yml
 ```
 
 Run the main playbook:

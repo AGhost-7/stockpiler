@@ -1,0 +1,21 @@
+- name: known hosts
+  hosts: all
+  gather_facts: False
+  connection: local
+  tasks:
+
+  - name: is remote in known_hosts file
+    delegate_to: localhost
+    command: ssh-keygen -F "{{inventory_hostname}}"
+    register: known_host
+    failed_when: known_host.stderr != ''
+
+  - name: known_hosts location
+    set_fact:
+      known_hosts_file:  "{{lookup('env', 'HOME')}}/.ssh/known_hosts"
+
+  - name: append to known_hosts
+    delegate_to: localhost
+    when: known_host.rc != 0
+    register: append
+    shell: ssh-keyscan -T 5 "{{inventory_hostname}}" >> "{{known_hosts_file}}"
