@@ -36,6 +36,7 @@ def test_user_registration():
     assert response.status_code == 200
     assert response.json()['email'] == state['email']
     assert response.headers['content-type'] == 'application/json'
+    assert response.headers['access-control-allow-origin'] == 'localhost:3000'
     with create_session() as session:
         user = session.query(User).filter(User.email == state['email']).first()
         assert user is not None
