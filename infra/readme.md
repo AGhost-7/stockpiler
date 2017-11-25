@@ -45,9 +45,9 @@ vagrant ssh
 cd /vagrant/ansible
 ```
 
-Set up the known hosts file
+Set up the orchestration machine:
 ```
-ansible-playbook -i test/vagrant_inventory known-hosts.yml
+ansible-playbook -i test/vagrant_inventory orchestration.yml
 ```
 
 Run the main playbook:
