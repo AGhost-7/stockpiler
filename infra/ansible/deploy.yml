@@ -2,12 +2,12 @@
 # Playbook to execute when a merge occurs into devel. Will implement
 # rolling deployment once we get past the MVP stage.
 
- - name: ui server
-   hosts: ui
-   serial: 1
-   roles:
-     - common
-     - ui
+- name: ui server
+  hosts: ui
+  serial: 1
+  roles:
+    - common
+    - ui
 
 - name: db server
   hosts: db

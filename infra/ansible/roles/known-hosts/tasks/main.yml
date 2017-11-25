@@ -1,0 +1,27 @@
+- name: known_hosts location
+  set_fact:
+    known_hosts_file:  "/home/{{known_hosts_user}}/.ssh/known_hosts"
+
+- name: ensure file is present
+  become: yes
+  become_user: "{{known_hosts_user}}"
+  file:
+    path: "{{known_hosts_file}}"
+    state: touch
+    mode: 0600
+
+- name: is remote in known_hosts file
+  delegate_to: localhost
+  command: ssh-keygen -F "{{inventory_hostname}}" -f "{{known_hosts_file}}"
+  register: known_host
+  failed_when: known_host.stderr != ''
+  become: yes
+  become_user: "{{known_hosts_user}}"
+
+- name: append to known_hosts
+  become: yes
+  become_user: "{{known_hosts_user}}"
+  delegate_to: localhost
+  when: known_host.rc != 0
+  register: append
+  shell: ssh-keyscan -T 5 "{{inventory_hostname}}" >> "{{known_hosts_file}}"
