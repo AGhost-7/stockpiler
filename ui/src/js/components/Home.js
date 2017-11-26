@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 
+
 class Home extends Component {
 
 	render() {
 		return (
-			<section className="layout-section">
+			<main className='layout'>
 				<h1>Home</h1>
-			</section>
+			</main>
 		)
 	}
 }

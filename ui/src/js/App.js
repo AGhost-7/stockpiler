@@ -1,44 +1,37 @@
 import React, { Component } from 'react'
-import { Route } from 'react-router-dom'
-import Header from './pages/Header'
-import SPFooter from './pages/SPFooter'
-import Home from './pages/Home'
-import GetStarted from './pages/GetStarted'
-import Login from './pages/Login'
-import SignUp from './pages/SignUp'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { fetchUser } from './actions/user-actions'
+import Header from './components/Header'
+import SPFooter from './components/SPFooter'
+import Home from './components/Home'
+import Login from './components/Login'
+import SignUp from './components/SignUp'
+import ConfirmEmail from './components/ConfirmEmail'
 
-connect((store) => {
+const mapStateToProps = (state) => {
 	return {
-		user: store.user.user
+		...state,
+		user: state.user.user,
 	}
-})
+}
 
 class App extends Component {
-
-	static propTypes = {
-		dispatch: () => {}
-	}
-
-	componentWillMount() {
-		this.props.dispatch(fetchUser())
-	}
 
 	render() {
 		return (
 			<div className='app'>
-				<Header></Header>
-				<main>
-					<Route exact path='/' component={Home}></Route>
-					<Route path='/get-started' component={GetStarted}></Route>
-					<Route path='/login' component={Login}></Route>
-					<Route path='/sign-up' component={SignUp}></Route>
-				</main>
-				<SPFooter></SPFooter>
+				<Header />
+				<Switch>
+					<Route exact path='/' component={Home} />
+					<Route path='/login' component={Login} />
+					<Route path='/sign-up' component={SignUp} />
+					<Route path='/email-confirmation/:id' component={ConfirmEmail} />
+				</Switch>
+				<SPFooter />
 			</div>
+
 		)
 	}
 }
 
-export default connect()(App)
+export default withRouter(connect(mapStateToProps)(App))

@@ -1,21 +1,70 @@
-export default function reducer(state = {
+const userReducer = (state = {
 	user: {
 		id: null,
-		name: null
-	}
-}, action) {
+		name: null,
+		email: null,
+		email_confirmed: false
+	},
+	pending: false,
+	fulfilled: false,
+	error: false
+}, action) => {
+	
 	switch (action.type) {
-	case 'CHANGE_NAME':
-		return {
+	
+	case 'USERS_REGISTER_PENDING':
+		state = {
 			...state,
-			name: action.payload
+			error: false,
+			pending: true,
+			fulfilled: false
 		}
-
-	case 'LOGIN': 
+		break
+	
+	case 'USERS_REGISTER_FULFILLED':
+		state = {
+			...state,
+			user: action.payload,
+			error: false,
+			pending: false,
+			fulfilled: true
+		}
 		break
 
-	default: 
+	case 'USERS_CONFIRM_EMAIL_PENDING':
+		state = {
+			...state,
+			error: false,
+			pending: true,
+			fulfilled: false
+		}
+		break
+	
+	case 'USERS_CONFIRM_EMAIL_FULFILLED':
+		state = {
+			...state,
+			user: action.payload,
+			error: false,
+			pending: false,
+			fulfilled: true
+		}
+		break
+
+	case 'USERS_REGISTER_REJECTED':
+	case 'USERS_CONFIRM_EMAIL_REJECTED':
+		state = {
+			...state,
+			message: action.payload.message,
+			error: true,
+			pending: false,
+			fulfilled: false
+		}
+		break
+
+	default:
 		break
 	}
 	return state
 }
+
+export default userReducer

@@ -1,16 +1,18 @@
-export function setUserName(name) {
-	return {
-		type: 'SET_USER_NAME',
-		payload: name
-	}
+import { post, get, dispatch } from '../web'
+
+export function register(payload) {
+	return dispatch({
+		type: 'USERS_REGISTER', 
+		payload: post('//localhost:5000/v1/users/register', payload)
+	})
+
 }
 
-export function fetchUser() {
-	return {
-		type: 'FETCH_USER_FULFILLED',
-		payload: {
-			id: 1,
-			name: 'billy bob',
-		}
-	}
+export function confirmEmail(payload) {
+
+	return dispatch({
+		type: 'USERS_CONFIRM_EMAIL', 
+		payload: get(`//localhost:5000/v1/users/confirm-email/${payload.id}`)
+	})
+
 }

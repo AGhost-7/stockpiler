@@ -1,9 +1,5 @@
-version: '3'
+version: '2'
 services:
   front:
-    image: nginx:1.13.5
-    volumes:
-      - $UI_DIR/public:/usr/share/nginx/public
-      - $UI_DIR/conf:/etc/nginx/conf.d
     ports:
       - 8000:80
