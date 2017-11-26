@@ -50,7 +50,7 @@ def test_failed_user_registration():
         base_url + '/v1/users/register', json={})
     assert response.status_code >= 400
     assert response.headers['content-type'] == 'application/json'
-    assert 'message' in response.json()
+    assert 'errors' in response.json()
 
 
 def test_user_registration_email():
