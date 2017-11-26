@@ -1,3 +1,15 @@
 #!/usr/bin/env bash
 
-ansible-playbook -i "$1" -e "docker_image_tag=$2" deploy.yml
+inventory="$1"
+tag="$2"
+env="$3"
+
+if [ -z "$tag" ]; then
+	tag="latest"
+fi
+
+if [ -z "$env" ]; then
+	env="stage"
+fi
+
+ansible-playbook -i "$inventory" -e "docker_image_tag=$tag" --limit "$env" deploy.yml

@@ -8,6 +8,10 @@ defaults
 	timeout connect 4s
 	timeout server 20s
 
+userlist staging_users
+	user AGhost-7 password $6$EmSZXr1UL1R83$JQtPLPka.9GN8ldPj4qYHvz93wEffOhCQPguI/pySaE14NyOMZe6FMJSFx8ba9HX5KZN6LJnX6umKVe74HyRm1
+	user hardy613 password $6$wdP26rr4QXb$ZGQI8r0ElDpRCDom/V2HUuiNrxbNbbSdvfN11I5fYf.9/xHTAIzPXWej.p4SrRpEjN4TFw418o.9y1.eN8Odh/
+
 frontend front-http
 	bind *:80
 	redirect scheme https code 301 if !{ ssl_fc }
@@ -27,6 +31,12 @@ frontend front-https
 	acl api_subdomain hdr_dom(host) -m beg api.
 	use_backend api if api_subdomain
 
+	acl stage_api_subdomain hdr_dom(host) -m beg stage-api.
+	use_backend stage-api if stage_api_subdomain
+
+	acl stage_subdomain hdr_dom(host) -m  beg stage.
+	use_backend stage-ui if stage_subdomain
+
 	default_backend ui
 
 backend buildbot
@@ -35,13 +45,13 @@ backend buildbot
 	{% endfor %}
 
 backend api
-	{% for host in groups['api'] %}
+	{% for host in groups['prod_api'] %}
 	server server{{loop.index}} {{host}}:5000 check
 	{% endfor %}
 
 backend ui
 	option http-keep-alive
-	{% for host in groups['ui'] %}
+	{% for host in groups['prod_ui'] %}
 	server server{{loop.index}} {{host}}:8000 check
 	{% endfor %}
 
@@ -49,3 +59,18 @@ backend certbot
 	{% for host in groups['certbot'] %}
 	server server{{loop.index}} {{host}}:6000
 	{% endfor %}
+
+backend stage-ui
+	acl auth_staging http_auth(staging_users)
+	http-request auth if !auth_staging
+	{% for host in groups['stage_ui'] %}
+	server server{{loop.index}} {{host}}:8000 check
+	{% endfor %}
+
+backend stage-api
+	acl auth_staging http_auth(staging_users)
+	http-request auth if !auth_staging
+	{% for host in groups['stage_api'] %}
+	server server{{loop.index}} {{host}}:5000 check
+	{% endfor %}
+

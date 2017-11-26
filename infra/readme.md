@@ -55,6 +55,16 @@ Run the main playbook:
 ansible-playbook -i test/vagrant_inventory site.yml
 ```
 
+### Fake domains
+Add the following to your `/etc/hosts` file:
+```
+192.168.50.6 stockpiler-dev.ca
+192.168.50.6 buildbot.stockpiler-dev.ca
+192.168.50.6 api.stockpiler-dev.ca
+192.168.50.6 stage.stockpiler-dev.ca
+192.168.50.6 stage-api.stockpiler-dev.ca
+```
+
 ## Topology
 
 ### Initial

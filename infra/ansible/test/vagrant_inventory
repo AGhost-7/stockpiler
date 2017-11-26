@@ -1,3 +1,6 @@
+# vim: set ft=dosini:
+
+# {{{ aliases
 [build]
 192.168.50.3
 [orchestration]
@@ -8,12 +11,19 @@
 192.168.50.5
 [front]
 192.168.50.6
-[api1]
+[prod_api1]
 192.168.50.7
-[ui1]
+[prod_ui1]
 192.168.50.8
-[db]
+[prod_db]
 192.168.50.9
+[stage_api1]
+192.168.50.10
+[stage_ui1]
+192.168.50.11
+[stage_db]
+192.168.50.12
+# }}}
 
 [registry:children]
 build
@@ -33,13 +43,41 @@ buildbot_worker
 [bender:children]
 build
 
-[ui:children]
+[prod_ui:children]
 front
-ui1
+prod_ui1
+
+[prod_api:children]
+front
+prod_api1
+
+[stage_api:children]
+stage_api1
+
+[stage_ui:children]
+stage_ui1
+
+[prod:children]
+prod_ui
+prod_api
+prod_db
+
+[stage:children]
+stage_ui
+stage_api
+stage_db
+
+[ui:children]
+prod_ui
+stage_ui
 
 [api:children]
-front
-api1
+stage_api
+prod_api
+
+[db:children]
+stage_db
+prod_db
 
 [certbot:children]
 front
