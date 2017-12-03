@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import SignUpForm from './forms/SignUpForm'
+import SignUpForm from '../components/forms/SignUpForm'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -25,11 +26,11 @@ class SignUp extends Component {
 	render() {
 		return (
 			<main>
-				<h1>Sign up</h1>	
+				<h1>Sign up!</h1>	
 				<SignUpForm {...this.props.request} />
 			</main>
 		)
 	}
 }
 
-export default connect(mapStateToProps)(SignUp)
+export default withRouter(connect(mapStateToProps)(SignUp))

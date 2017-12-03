@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Row, Input } from 'react-materialize'
 import { register } from '../../actions/user-actions'
 import PropTypes from 'prop-types'
-
-
+import * as materialize from 'materialize-css'
 class SignUpForm extends Component {
 
 	static propTypes = {
@@ -41,6 +40,9 @@ class SignUpForm extends Component {
 		}
 		if (nextProps.message !== this.state.message) {
 			this.setState({ message: nextProps.message })
+		}
+		if(nextProps.error && nextProps.message) {
+			materialize.toast(`<span>${nextProps.message}</span><button class="btn-flat toast-action">Undo</button>`, 40000)
 		}
 	}
 

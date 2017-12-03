@@ -1,4 +1,4 @@
-import { post, get, dispatch } from '../web'
+import { post, get, dispatch } from '../api'
 
 export function register(payload) {
 	return dispatch({

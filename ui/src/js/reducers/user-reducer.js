@@ -11,26 +11,8 @@ const userReducer = (state = {
 }, action) => {
 	
 	switch (action.type) {
-	
-	case 'USERS_REGISTER_PENDING':
-		state = {
-			...state,
-			error: false,
-			pending: true,
-			fulfilled: false
-		}
-		break
-	
-	case 'USERS_REGISTER_FULFILLED':
-		state = {
-			...state,
-			user: action.payload,
-			error: false,
-			pending: false,
-			fulfilled: true
-		}
-		break
 
+	case 'USERS_REGISTER_PENDING':
 	case 'USERS_CONFIRM_EMAIL_PENDING':
 		state = {
 			...state,
@@ -40,6 +22,7 @@ const userReducer = (state = {
 		}
 		break
 	
+	case 'USERS_REGISTER_FULFILLED':
 	case 'USERS_CONFIRM_EMAIL_FULFILLED':
 		state = {
 			...state,
