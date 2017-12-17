@@ -21,7 +21,7 @@ export default class NavBar extends React.Component {
 						<div class='nav-wrapper'>
 							<Link to='/' class='brand-logo'>StockPiler</Link>
 							<a href='#' data-activates='mobile-menu' class='button-collapse'>
-								<i class='mi mi-face'>menu</i>
+								<i class='material-icons'>menu</i>
 							</a>
 							<Menu class='right hide-on-med-and-down'>
 								{this.props.children}
