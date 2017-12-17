@@ -1,15 +1,6 @@
 @charset 'UTF-8';
 // framwork
 @import '../../node_modules/materialize-css/sass/materialize';
-body,
-#app,
-#full-display { 
-	display: flex;
-	min-height: 100vh;
-	flex-direction: column;
-}
-
-main {
-	flex: 1 0 auto;
-}
+@import './extentions/_app';
+@import './extentions/_buttons';
 
