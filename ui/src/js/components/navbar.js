@@ -1,21 +1,39 @@
 import React from 'react'
+import $ from 'jquery'
+import 'materialize-css'
+import { Link } from 'react-router-dom'
 
-class NavBar extends React.Component {
+import Menu from './menu'
+
+export default class NavBar extends React.Component {
+	
+
+	componentDidMount() {
+		$('.button-collapse').sideNav()
+	}
+
+
 	render() {
 		return (
-			<nav>
-				<div class="nav-wrapper">
-					<a href="#" class="brand-logo">Logo</a>
-					<ul id="nav-mobile" class="right hide-on-med-and-down">
-						<li><a href="sass.html">Sass</a></li>
-						<li><a href="badges.html">Components</a></li>
-						<li><a href="collapsible.html">JavaScript</a></li>
-					</ul>
+			<div>
+				<div class='navbar-fixed'>
+					<nav>
+						<div class='nav-wrapper'>
+							<Link to='/' class='brand-logo'>StockPiler</Link>
+							<a href='#' data-activates='mobile-menu' class='button-collapse'>
+								<i class='mi mi-face'>menu</i>
+							</a>
+							<Menu class='right hide-on-med-and-down'>
+								{this.props.children}
+							</Menu>
+						</div>
+					</nav>
 				</div>
-			</nav>
+				<Menu class='side-nav' id='mobile-menu'>
+					{this.props.children}
+				</Menu>
+			</div>
 		)
 	}
 
 }
-
-export default NavBar

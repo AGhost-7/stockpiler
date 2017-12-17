@@ -16,7 +16,8 @@ module.exports = {
 		port: 3000,
 		publicPath: '/',
 		contentBase: './public',
-		hot: true
+		hot: true,
+		historyApiFallback: true
 	},
 	module: {
 		loaders: [
@@ -31,7 +32,7 @@ module.exports = {
 			},
 			{
 				test: /\.scss$/,
-				loaders: ['style-loader', 'css-loader', 'sass-loader']
+				loaders: ['style-loader', 'css-loader', 'sass-loader', 'sass']
 			},
 			{
 				test: /\.css$/,
@@ -60,10 +61,7 @@ module.exports = {
 		],
 		resolve: {
 			extensions: ['', '.js', '.jsx', '.css', '.scss'],
-			modulesDirectories: ['node_modules'],
-			alias: {
-				'materialize-css': 	path.join(__dirname, 'node_modules', 'materialize-css', 'sass')
-			}
+			modulesDirectories: ['node_modules']
 		}
 	},
 	output: {
