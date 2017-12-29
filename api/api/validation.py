@@ -6,7 +6,7 @@ from flask import jsonify, request
 class ValidationError(Exception):
     def __init__(self, errors, status_code=404):
         self.errors = errors
-        self.status_code = 404
+        self.status_code = status_code
 
 
 class RequestParser(object):
@@ -64,7 +64,7 @@ def on_validation_error(error):
 def non_negative_int(value):
     try:
         value = int(value)
-    except Exception as e:
+    except Exception:
         raise TypeError('Must be an integer')
     if value < 0:
         raise ValueError('Number cannot be less than zero')
