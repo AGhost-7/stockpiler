@@ -13,7 +13,6 @@ flake8==3.5.0
 Flask==0.12.2
 Flask-Babel==0.11.2
 Flask-Mail==0.9.1
-Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.2
 idna==2.6
 itsdangerous==0.24

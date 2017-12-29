@@ -17,7 +17,7 @@ def create_session():
     try:
         yield session
         session.commit()
-    except Exception():
+    except Exception:
         session.rollback()
         raise
     finally:
