@@ -27,6 +27,7 @@ POST /v1/users/register
 Request body:
 ```
 {
+	"username": "aghost-7",
 	"email": "aghost-7@example.com",
 	"password": "testing123"
 }
@@ -46,10 +47,10 @@ GET /v1/users/confirm-email/:id
 POST /v1/users/login
 ```
 
-Request body:
+Request body (`login` can be either email or username):
 ```
 {
-	"email": "aghost-7@example.com",
+	"login": "aghost-7@example.com",
 	"password": "testing123"
 }
 ```
