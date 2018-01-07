@@ -4,9 +4,10 @@ from requests_toolbelt import sessions
 
 
 class UserFixture:
-    def __init__(self, email, password):
+    def __init__(self, email, username, password):
         self.id = None
         self.email = email
+        self.username = username
         self.password = password
         self.credentials = {
             'email': email,
@@ -42,9 +43,9 @@ class UserFixture:
         })
 
 
-owner = UserFixture('aghost7@gmail.com', 'password123')
-employee = UserFixture('foo@bar.com', 'password')
-snek = UserFixture('snek@tss', '123')
+owner = UserFixture('aghost7@gmail.com', 'aghost7', 'password123')
+employee = UserFixture('foo@bar.com', 'foobar', 'password')
+snek = UserFixture('snek@tss', 'snek', '123')
 
 users = [owner, employee, snek]
 
