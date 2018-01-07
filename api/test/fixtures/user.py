@@ -10,7 +10,7 @@ class UserFixture:
         self.username = username
         self.password = password
         self.credentials = {
-            'email': email,
+            'login': email,
             'password': password
         }
         self.requests = sessions.BaseUrlSession(
@@ -23,8 +23,13 @@ class UserFixture:
                 .filter(User.email == self.email) \
                 .first()
             if db_user is None:
+                data = {
+                    'username': self.username,
+                    'email': self.email,
+                    'password': self.password
+                }
                 response = self.requests.post(
-                    '/v1/users/register', json=self.credentials)
+                    '/v1/users/register', json=data)
                 assert response.status_code == 200
                 db_user = session \
                     .query(User) \
