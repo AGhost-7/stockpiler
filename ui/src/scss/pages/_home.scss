@@ -1,0 +1,13 @@
+@charset 'UTF-8';
+
+#banner {
+	width: 100%;
+	max-height: 50rem;
+
+	.img {
+		width: 100%;
+		height: auto;
+		max-height: 50rem;
+		background-image: cover;
+	}
+}
