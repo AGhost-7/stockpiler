@@ -1,9 +1,9 @@
 @charset 'UTF-8';
 
 // Colors
-@import './colours/_colours';
+@import './colours/colours';
 // Variables;
-@import '../../node_modules/materialize-css/sass/components/variables';
+@import './variables';
 // Reset
 @import '../../node_modules/materialize-css/sass/components/normalize';
 // components
@@ -37,9 +37,9 @@
 @import '../../node_modules/materialize-css/sass/components/date_picker/default';
 @import '../../node_modules/materialize-css/sass/components/date_picker/default.date';
 @import '../../node_modules/materialize-css/sass/components/date_picker/default.time';
-@import './extentions/_app';
-@import './extentions/_buttons';
+@import './extensions/_app';
+@import './extensions/_buttons';
 // pages
-//@import './pages/_global';
+@import './pages/_global';
 @import './pages/_home';
 

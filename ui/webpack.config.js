@@ -31,21 +31,20 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.scss$/,
+				test: /\.(s*)css$/,
 				loaders: ['style-loader', 'css-loader', 'sass-loader', 'sass']
 			},
 			{
-				test: /\.css$/,
-				loader: ['style-loader', 'css-loader']
-			},
+				test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+				loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
 			{ 
-				test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-				loader: 'url-loader?limit=100000'
-			}
+				test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+				loader: 'file-loader'
+			} 
 		],
 		rules: [
 			{
-				test: /\.scss$/,
+				test: /\.(s*)css$/,
 				use: [
 					{
 						loader: 'style-loader' // creates style nodes from JS strings
