@@ -1,0 +1,5 @@
+version: '2'
+services:
+  front:
+    ports:
+      - 8000:80

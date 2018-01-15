@@ -1,0 +1,31 @@
+body,
+#root,
+.app {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
+.display-none {
+	display: none;
+}
+
+.loader {
+	margin: 0;
+}
+
+.loader.yellow {
+	background-color: yellow;
+}
+
+.loader.red {
+	background-color: orangered;
+}
+
+.loader.green {
+	background-color: green;
+}
