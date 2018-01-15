@@ -75,7 +75,6 @@ def test_user_confirmation():
 
 def test_user_login():
     for login_name in (state['username'], state['email']):
-        print(login_name)
         data = {
             'login': login_name,
             'password': state['password']
