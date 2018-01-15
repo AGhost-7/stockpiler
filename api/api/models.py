@@ -50,7 +50,6 @@ class User(db.Model):
         return User.query.filter(User.email == email).first()
 
     def by_login(*values):
-        print(values)
         return User \
             .query \
             .filter(or_(User.email.in_(values), User.username.in_(values))) \
