@@ -2,7 +2,7 @@ from api.config import config
 from .db import db
 from datetime import datetime
 from sqlalchemy import Column, Boolean, ForeignKey, DateTime, \
-    PrimaryKeyConstraint, Integer, Numeric, Text, String
+    PrimaryKeyConstraint, Integer, Numeric, Text, String, UniqueConstraint, or_
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.sql import func as sqlfunc
 from uuid import uuid4
@@ -32,9 +32,11 @@ class TrackCreations:
 
 
 class User(db.Model):
+    __tableargs__ = (UniqueConstraint('email', 'username'),)
     id = Id()
     email = Column(Text(), nullable=False, unique=True)
     password = Column(BYTEA(60), nullable=False)
+    username = Column(Text(), nullable=False, unique=True)
     email_confirmed = Column(Boolean(), nullable=False, default=False)
 
     def to_dict(self):
@@ -46,6 +48,12 @@ class User(db.Model):
 
     def by_email(email):
         return User.query.filter(User.email == email).first()
+
+    def by_login(*values):
+        return User \
+            .query \
+            .filter(or_(User.email.in_(values), User.username.in_(values))) \
+            .first()
 
 
 class EmailConfirmation(db.Model, TrackCreations):

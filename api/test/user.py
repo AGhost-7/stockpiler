@@ -13,6 +13,7 @@ base_url = 'http://localhost:5000'
 mail_base_url = 'http://' + environ.get('MAIL_SERVER', 'localhost') + ':8025'
 
 state = {
+    'username': fake.name(),
     'email': fake.email(),
     'password': fake.password()
 }
@@ -73,10 +74,15 @@ def test_user_confirmation():
 
 
 def test_user_login():
-    response = requests.post(base_url + '/v1/users/login', json=state)
-    assert response.status_code == 200
-    body = response.json()
-    assert 'token' in body
+    for login_name in (state['username'], state['email']):
+        data = {
+            'login': login_name,
+            'password': state['password']
+        }
+        response = requests.post(base_url + '/v1/users/login', json=data)
+        assert response.status_code == 200
+        body = response.json()
+        assert 'token' in body
 
 
 def test_password_reset_bad_email():
@@ -118,5 +124,9 @@ def test_password_reset():
 
 
 def test_password_reset_login():
-    response = requests.post(base_url + '/v1/users/login', json=state)
+    data = {
+        'login': state['username'],
+        'password': state['password']
+    }
+    response = requests.post(base_url + '/v1/users/login', json=data)
     assert response.status_code == 200

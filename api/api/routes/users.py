@@ -15,18 +15,27 @@ users = Blueprint('users', __name__, url_prefix='/v1/users')
 @users.route('/register', methods=['POST'])
 def register():
     args = simple_parser() \
+        .add_argument('username', type=str, required=True) \
         .add_argument('email', type=str, required=True) \
         .add_argument('password', type=str, required=True) \
         .parse_args()
 
     email = args['email']
+    username = args['username']
+    existing_user = User.by_login(username, email)
 
-    if User.by_email(email) is not None:
+    if existing_user is not None:
+        field_error = None
+        if username == existing_user.username:
+            field_error = 'username'
+        else:
+            field_error = 'email'
+
         return error.bad_request(
-            'A user with the given email already exists.')
+            'A user with the given {} already exists.'.format(field_error))
 
     hashed = bcrypt.hashpw(bytes(args['password'], 'utf8'), bcrypt.gensalt())
-    user = User(email=email, password=hashed)
+    user = User(email=email, username=username, password=hashed)
     db.session.add(user)
     db.session.flush()
 
@@ -62,17 +71,18 @@ def confirm_email(id):
 @users.route('/login', methods=['POST'])
 def login():
     args = simple_parser() \
-        .add_argument('email', type=str, required=True) \
+        .add_argument('login', type=str, required=True) \
         .add_argument('password', type=str, required=True) \
         .parse_args()
 
-    email = args['email']
+    login = args['login']
     password = args['password']
 
-    user = User.by_email(email)
+    user = User.by_login(login)
 
     if user is None:
-        return error.not_found('Could not find a user tied to the given email')
+        return error.not_found(
+            'Could not find a user tied to the given email or username.')
 
     if not user.email_confirmed:
         return error.bad_request('Email confirmation is still pending')
