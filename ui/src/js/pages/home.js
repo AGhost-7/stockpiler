@@ -1,19 +1,13 @@
 import React from 'react'
-
+import Banner from '../components/banner'
+import BannerImg from 'file!../../images/banner_home.jpg'
 
 export default class HomePage extends React.Component {
-	
-
-	componentDidMount() {
-		
-	}
 
 	render() {
 		return (
 			<section id='home-page'>
-				<div id='banner' class='row'>
-					<img class='img' src='http://fakeimg.pl/1200x500/' />
-				</div>
+				<Banner image={BannerImg} />
 				<div class='container'>
 					<div class='row'>
 						<div class='col s12 m4 l4'>

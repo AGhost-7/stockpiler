@@ -1,5 +1,11 @@
 @charset 'UTF-8';
 
+html {
+	font-size: 62.5%;
+	background-color: color('shade', 'white');
+	color: color('shade', 'black');
+}
+
 body,
 #app,
 #full-display { 

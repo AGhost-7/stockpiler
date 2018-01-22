@@ -40,22 +40,17 @@ module.exports = {
 			{ 
 				test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
 				loader: 'file-loader'
-			} 
-		],
-		rules: [
+			},
 			{
 				test: /\.(s*)css$/,
-				use: [
-					{
-						loader: 'style-loader' // creates style nodes from JS strings
-					}, 
-					{
-						loader: 'sass-loader', // compiles Sass to CSS
-					},
-					{
-						loader: 'css-loader', // translates CSS into CommonJS
-					}
-				]
+				loader: [ 'style-loader', 'sass-loader', 'css-loader']
+			},
+			{
+				test: /\.(png|jpg|jpeg|svg)$/,  
+				loader: 'url-loader',
+				options: { 
+					name: 'images/[hash]-[name].[ext]'
+				} 
 			}
 		],
 		resolve: {

@@ -37,9 +37,10 @@
 @import '../../node_modules/materialize-css/sass/components/date_picker/default';
 @import '../../node_modules/materialize-css/sass/components/date_picker/default.date';
 @import '../../node_modules/materialize-css/sass/components/date_picker/default.time';
-@import './extensions/_app';
-@import './extensions/_buttons';
+// components
+@import './components/_app';
+@import './components/_buttons';
+@import './components/_banner';
 // pages
-@import './pages/_global';
 @import './pages/_home';
 
