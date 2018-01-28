@@ -36,21 +36,27 @@ module.exports = {
 			},
 			{
 				test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-				loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+				loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+			},
 			{ 
 				test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
 				loader: 'file-loader'
-			},
+			} 
+		],
+		rules: [
 			{
 				test: /\.(s*)css$/,
-				loader: [ 'style-loader', 'sass-loader', 'css-loader']
-			},
-			{
-				test: /\.(png|jpg|jpeg|svg)$/,  
-				loader: 'url-loader',
-				options: { 
-					name: 'images/[hash]-[name].[ext]'
-				} 
+				use: [
+					{
+						loader: 'style-loader' // creates style nodes from JS strings
+					}, 
+					{
+						loader: 'sass-loader', // compiles Sass to CSS
+					},
+					{
+						loader: 'css-loader', // translates CSS into CommonJS
+					}
+				]
 			}
 		],
 		resolve: {
