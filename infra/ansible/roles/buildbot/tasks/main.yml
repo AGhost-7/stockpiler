@@ -150,3 +150,5 @@
       WORKERPASS: "{{buildbot_worker_pass}}"
       BUILDMASTER: "{{groups['buildbot_master'][0]}}"
       BUILDMASTER_PORT: 9989
+
+- import_tasks: deploy.yml

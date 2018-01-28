@@ -5,7 +5,7 @@ buildbot_postgres_password: buildbot
 buildbot_postgres_db: buildbot
 buildbot_git_repository: git@github.com:AGhost-7/stockpiler
 buildbot_config_dir: /etc/buildbot
-buildbot_url: https://buildbot.stockpiler-dev.com/
+buildbot_url: https://buildbot.stockpiler-dev.ca/
 buildbot_aghost_cred: changemeh
 buildbot_shardy_cred: changemeh
 buildbot_stage_branch: devel

@@ -65,6 +65,15 @@ Add the following to your `/etc/hosts` file:
 192.168.50.6 stage-api.stockpiler-dev.ca
 ```
 
+### Testing webhooks
+From the build server, run the following:
+```
+sudo apt-get install unzip -y
+curl -o ngrok.zip -L https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+unzip ngrok.zip
+./ngrok http 8010
+```
+
 ## Topology
 
 ### Initial

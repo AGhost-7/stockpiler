@@ -1,0 +1,32 @@
+
+# Configuration specific to buildbot's deployment capability
+
+- name: open firewall for workers to ssh in orchestration machine
+  delegate_to: localhost
+  with_items: "{{groups['buildbot_worker']}}"
+  ufw:
+    rule: allow
+    from_ip: "{{item}}"
+  notify:
+    - reload firewall
+
+# - Generate key for each worker.
+# - Add key to authorized_keys.
+
+#- name: generate keys
+ 
+
+      #- name: deploy script
+      #  delegate_to: localhost
+      #  run_once: yes
+      #  set_fact:
+      #    deploy_script: "{{lookup('env', 'PWD')}}/scripts/deploy.sh"
+      #
+      ## open firewall, generate keey
+      #- name: add private key for workers to ssh in orchestration machine
+      #  delegate_to: localhost
+      #  with_items: "{{groups['buildbot_worker']}}"
+      #  lineinfile:
+      #    path: "{{ansible_env.HOME}}/.ssh/authorized_keys"
+      #    regexp: '^command='
+      #    line: "command='./scripts/deploy.sh $SSH_ORIGINAL_COMMAND',no-port-forwarding,no-x11-forwarding,no-agent-forwarding ssh-rsa "
