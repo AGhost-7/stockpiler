@@ -15,5 +15,5 @@ docker run --rm \
 		-p 443:443 \
 		-ti \
 		-v /etc/letsencrypt:/etc/letsencrypt \
-		{{docker_registry_name}}/certbot \
+		aghost7/certbot \
 		certbot certonly --standalone --preferred-challenges http --http-01-port 80 -d "$domains"
