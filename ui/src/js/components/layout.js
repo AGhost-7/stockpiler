@@ -15,7 +15,6 @@ export default class Layout extends React.Component {
 				<main>
 					<Switch>
 						<Route path='/' exact component={Home} />
-						<Route path='/register' component={Register} />
 						<Redirect to='/' />
 					</Switch>
 				</main>
