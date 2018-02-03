@@ -1,0 +1,21 @@
+@charset 'UTF-8';
+
+html {
+	//font-size: 62.5%;
+	background-color: color('shade', 'white');
+	color: color('shade', 'black');
+}
+
+body,
+#app,
+#full-display { 
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+	//font-size: 1.2rem;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
